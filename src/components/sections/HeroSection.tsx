@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ventureLogoImage from "@/assets/venture-logo.png";
-import heroImage from "@/assets/hero-ivy-league.png";
+import heroImage from "@/assets/hero-soccer-stadium.jpg";
 
 export const HeroSection = () => {
   const scrollToForm = () => {
@@ -27,7 +27,8 @@ export const HeroSection = () => {
             <img 
               src={ventureLogoImage} 
               alt="Venture Sports USA" 
-              className="h-24 md:h-32 lg:h-40 w-auto drop-shadow-2xl"
+              className="h-24 md:h-32 lg:h-40 w-auto drop-shadow-[0_0_30px_rgba(59,130,246,0.8)] [filter:brightness(1.1)]"
+              style={{ mixBlendMode: 'screen' }}
             />
           </div>
           
@@ -46,8 +47,8 @@ export const HeroSection = () => {
               <div className="text-white/80 text-sm">Universities</div>
             </div>
             <div className="flex flex-col items-center gap-2 px-6 py-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
-              <div className="text-3xl font-bold text-accent-blue">100+</div>
-              <div className="text-white/80 text-sm">Players Placed</div>
+              <div className="text-3xl font-bold text-accent-blue">350+</div>
+              <div className="text-white/80 text-sm">Athletes Placed</div>
             </div>
             <div className="flex flex-col items-center gap-2 px-6 py-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
               <div className="text-3xl font-bold text-accent-blue">24hrs</div>

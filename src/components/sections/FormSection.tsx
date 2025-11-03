@@ -1,11 +1,34 @@
 import { PlayerLeadForm } from "@/components/PlayerLeadForm";
 import { Sparkles } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface FormSectionProps {
   repId?: string;
 }
 
 export const FormSection = ({ repId }: FormSectionProps) => {
+  const [email, setEmail] = useState("ajayyosi@venturesportsusa.com");
+
+  useEffect(() => {
+    const loadContactInfo = async () => {
+      if (!repId) return;
+      
+      try {
+        const { data, error } = await supabase.functions.invoke("get-rep-contact-info", {
+          body: { repId },
+        });
+
+        if (!error && data?.success && data.email) {
+          setEmail(data.email);
+        }
+      } catch (error) {
+        console.error("Error loading contact info");
+      }
+    };
+
+    loadContactInfo();
+  }, [repId]);
   return (
     <section id="evaluation-form" className="relative py-20 md:py-32 bg-gradient-to-b from-secondary/30 via-background to-[hsl(220,75%,15%)] overflow-hidden">
       {/* Decorative gradient orbs */}
@@ -40,10 +63,10 @@ export const FormSection = ({ repId }: FormSectionProps) => {
             </p>
             <p className="text-base">
               <a
-                href="mailto:ajayyosi@venturesportsusa.com"
+                href={`mailto:${email}`}
                 className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-semibold transition-colors group"
               >
-                Contact our team: ajayyosi@venturesportsusa.com
+                Contact our team: {email}
                 <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>

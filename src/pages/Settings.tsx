@@ -154,27 +154,38 @@ export default function Settings() {
             <CardHeader>
               <CardTitle>Your Shareable Link</CardTitle>
               <CardDescription>
-                Share this link with leads to track submissions to your Pipedrive
+                This is YOUR unique link. Share it with players so their submissions go to your Pipedrive.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2">
-                <Input
-                  value={username 
-                    ? `${window.location.origin}/${username}`
-                    : `${window.location.origin}?rep=${userId}`}
-                  readOnly
-                  className="font-mono text-sm"
-                />
-                <Button onClick={copyShareableLink} variant="outline">
-                  <Copy className="w-4 h-4" />
-                </Button>
+              <div className="space-y-4">
+                <div className="flex gap-2">
+                  <Input
+                    value={username 
+                      ? `${window.location.origin}/${username}`
+                      : `${window.location.origin}?rep=${userId}`}
+                    readOnly
+                    className="font-mono text-sm"
+                  />
+                  <Button onClick={copyShareableLink} variant="outline">
+                    <Copy className="w-4 h-4" />
+                  </Button>
+                </div>
+                {!username && (
+                  <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3">
+                    <p className="text-sm text-yellow-600 dark:text-yellow-400 font-medium">
+                      ⚠️ Set a username below to get a cleaner shareable link!
+                    </p>
+                  </div>
+                )}
+                {username && (
+                  <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
+                    <p className="text-sm text-green-600 dark:text-green-400 font-medium">
+                      ✅ Your custom link is ready! When players visit this link, they'll see your contact info.
+                    </p>
+                  </div>
+                )}
               </div>
-              {!username && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  Set a username below to get a custom link
-                </p>
-              )}
             </CardContent>
           </Card>
 

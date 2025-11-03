@@ -31,23 +31,31 @@ export const Header = ({ repId }: HeaderProps) => {
     try {
       if (repId) {
         // Load settings for the specific rep using secure edge function
+        console.log("📞 Header: Loading contact info for repId:", repId);
         const { data, error } = await supabase.functions.invoke("get-rep-contact-info", {
           body: { repId },
         });
 
         if (!error && data?.success) {
+          console.log("✅ Header: Loaded agent contact info:", data);
           setUserSettings({
             phone_number: data.phoneNumber,
             email: data.email,
           });
           return;
+        } else {
+          console.error("❌ Header: Failed to load agent contact info:", error);
         }
       }
 
       // Load authenticated user's own settings (RLS allows this)
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+      if (!user) {
+        console.log("⚠️ Header: No repId and no authenticated user");
+        return;
+      }
 
+      console.log("👤 Header: Loading settings for authenticated user:", user.id);
       const { data, error } = await supabase
         .from("user_settings")
         .select("phone_number, email")
@@ -55,13 +63,16 @@ export const Header = ({ repId }: HeaderProps) => {
         .single();
 
       if (error && error.code !== "PGRST116") {
-        console.error("Error loading settings:", error.message);
+        console.error("❌ Header: Error loading settings:", error.message);
         return;
       }
 
-      setUserSettings(data);
+      if (data) {
+        console.log("✅ Header: Loaded user settings:", data);
+        setUserSettings(data);
+      }
     } catch (error) {
-      console.error("Error loading user settings");
+      console.error("❌ Header: Error loading user settings:", error);
     }
   };
 

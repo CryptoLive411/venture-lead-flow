@@ -24,7 +24,7 @@ const FormPage = () => {
         // Check for ?rep= parameter first
         const repParam = searchParams.get("rep");
         if (repParam) {
-          console.log("Found repId from query param:", repParam);
+          console.log("✅ FormPage: Found repId from query param:", repParam);
           setRepId(repParam);
           setLoading(false);
           return;
@@ -32,28 +32,28 @@ const FormPage = () => {
 
         // If using slug format (just the username)
         if (slug) {
-          console.log("Looking up user by slug:", slug);
+          console.log("🔍 FormPage: Looking up user by slug:", slug);
           const { data, error } = await supabase
             .from("user_settings")
-            .select("user_id")
+            .select("user_id, username, email, phone_number")
             .eq("username", slug)
             .maybeSingle();
 
           if (error) {
-            console.error("Error finding user:", error);
+            console.error("❌ FormPage: Error finding user:", error);
             setLoading(false);
             return;
           }
 
           if (data) {
-            console.log("Found repId from slug:", data.user_id);
+            console.log("✅ FormPage: Found user data:", data);
             setRepId(data.user_id);
           } else {
-            console.log("No user found for slug:", slug);
+            console.log("⚠️ FormPage: No user found for slug:", slug);
           }
         }
       } catch (error) {
-        console.error("Error loading rep ID:", error);
+        console.error("❌ FormPage: Error loading rep ID:", error);
       } finally {
         setLoading(false);
       }

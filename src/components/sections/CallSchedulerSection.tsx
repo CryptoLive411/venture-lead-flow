@@ -1,7 +1,43 @@
 import { Button } from "@/components/ui/button";
 import { Calendar, Phone, Clock, CheckCircle2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
-export const CallSchedulerSection = () => {
+interface CallSchedulerSectionProps {
+  repId?: string;
+}
+
+export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
+  const [contactInfo, setContactInfo] = useState<{
+    phone_number: string | null;
+    email: string | null;
+  }>({
+    phone_number: "5085891407",
+    email: "ajayyosi@venturesportsusa.com",
+  });
+
+  useEffect(() => {
+    const loadContactInfo = async () => {
+      if (!repId) return;
+      
+      try {
+        const { data, error } = await supabase.functions.invoke("get-rep-contact-info", {
+          body: { repId },
+        });
+
+        if (!error && data?.success) {
+          setContactInfo({
+            phone_number: data.phoneNumber || "5085891407",
+            email: data.email || "ajayyosi@venturesportsusa.com",
+          });
+        }
+      } catch (error) {
+        console.error("Error loading contact info");
+      }
+    };
+
+    loadContactInfo();
+  }, [repId]);
   const benefits = [
     "15-minute free consultation",
     "Discuss your soccer career goals",
@@ -78,13 +114,13 @@ export const CallSchedulerSection = () => {
                     <h3 className="text-2xl font-bold text-foreground mb-2">Call Us Directly</h3>
                     <p className="text-muted-foreground mb-6">Speak with us right now</p>
                     
-                    <a href="tel:5085891407">
+                    <a href={`tel:${contactInfo.phone_number}`}>
                       <Button 
                         size="lg"
                         className="w-full bg-gradient-to-r from-primary to-accent-blue hover:from-primary/90 hover:to-accent-blue/90 text-white font-semibold py-6 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all"
                       >
                         <Phone className="w-5 h-5 mr-2" />
-                        (508) 589-1407
+                        {contactInfo.phone_number}
                       </Button>
                     </a>
                   </div>
@@ -102,14 +138,14 @@ export const CallSchedulerSection = () => {
                     <h3 className="text-2xl font-bold text-foreground mb-2">Email Us</h3>
                     <p className="text-muted-foreground mb-6">We'll respond within 24 hours</p>
                     
-                    <a href="mailto:ajayyosi@venturesportsusa.com">
+                    <a href={`mailto:${contactInfo.email}`}>
                       <Button 
                         size="lg"
                         variant="outline"
                         className="w-full border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold py-6 rounded-xl transition-all hover:scale-105"
                       >
                         <Calendar className="w-5 h-5 mr-2" />
-                        ajayyosi@venturesportsusa.com
+                        {contactInfo.email}
                       </Button>
                     </a>
                   </div>

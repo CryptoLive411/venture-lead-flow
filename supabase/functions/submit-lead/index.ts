@@ -23,8 +23,11 @@ const leadSchema = z.object({
   preferredLeague: z.array(z.string().max(100)).max(10),
   preferredDivision: z.array(z.string().max(50)).max(10),
   hasHighlightTape: z.string().trim().max(10),
-  highlightsLink: z.string().trim().url().max(500).optional(),
+  highlightsLink: z.string().trim().max(500).optional().refine((val) => !val || val === "" || z.string().url().safeParse(val).success, {
+    message: "Must be a valid URL or empty",
+  }),
   callAvailability: z.string().trim().max(100),
+  callTime: z.string().trim().max(20).optional(),
   repId: z.string().uuid(),
 });
 
@@ -45,6 +48,7 @@ interface LeadData {
   hasHighlightTape: string;
   highlightsLink?: string;
   callAvailability: string;
+  callTime?: string;
   repId: string;
 }
 
@@ -202,11 +206,11 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
           subject: `Call with ${leadData.fullName}`,
           type: "call",
           due_date: leadData.callAvailability,
-          due_time: "10:00", // Default time, can be customized
+          due_time: leadData.callTime || "10:00",
           duration: "00:30", // 30 minutes default
           deal_id: dealId,
           person_id: personId,
-          note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}`,
+          note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}${leadData.callTime ? ` at ${leadData.callTime}` : ""}`,
         }),
       }
     );

@@ -75,6 +75,7 @@ const formSchema = z.object({
   callAvailability: z
     .string()
     .min(1, { message: "Please select when you're available" }),
+  callTime: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -106,6 +107,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       hasHighlightTape: "no",
       highlightsLink: "",
       callAvailability: "",
+      callTime: "",
     },
   });
 
@@ -439,22 +441,44 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="callAvailability"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>When are you free for a call? *</FormLabel>
-              <FormControl>
-                <Input 
-                  type="date" 
-                  {...field} 
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <FormField
+            control={form.control}
+            name="callAvailability"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>When are you free for a call? *</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="date" 
+                    {...field} 
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          
+          <FormField
+            control={form.control}
+            name="callTime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Preferred Call Time (Optional)</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="time" 
+                    {...field} 
+                  />
+                </FormControl>
+                <FormDescription>
+                  Select your preferred time for the call
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <Button
           type="submit"

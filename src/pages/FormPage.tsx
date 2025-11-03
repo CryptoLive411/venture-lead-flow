@@ -77,7 +77,7 @@ const FormPage = () => {
       <ScholarshipsSection />
       <TestimonialsSection />
       <PlayersSection />
-      <CallSchedulerSection />
+      <CallSchedulerSection repId={repId} />
       <FormSection repId={repId} />
     </div>
   );

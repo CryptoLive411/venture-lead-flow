@@ -24,7 +24,9 @@ export const Header = ({ repId }: HeaderProps) => {
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    setIsAuthenticated(!!session);
+    // Only show settings if authenticated AND viewing own page (no repId) OR if repId matches user
+    const isOwnPage = !repId || (session?.user?.id === repId);
+    setIsAuthenticated(!!session && isOwnPage);
   };
 
   const loadUserSettings = async () => {

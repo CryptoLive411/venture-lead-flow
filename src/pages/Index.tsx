@@ -1,60 +1,98 @@
 import { PlayerLeadForm } from "@/components/PlayerLeadForm";
-import ventureLogo from "@/assets/venture-logo.png";
+import ventureLogoImage from "@/assets/venture-logo.png";
+import heroImage from "@/assets/hero-ivy-league.png";
+import teamImage from "@/assets/team-year-1.png";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary to-background">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-b from-primary to-primary/90 text-primary-foreground py-16 md:py-24">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(120,119,198,0.3),rgba(255,255,255,0))]" />
+      <div className="relative overflow-hidden bg-gradient-to-br from-primary via-primary-dark to-accent">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-primary-glow/20 via-transparent to-transparent" />
         
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl mx-auto text-center space-y-8">
-            <div className="flex justify-center mb-8 animate-in fade-in slide-in-from-top duration-500">
-              <img
-                src={ventureLogo}
-                alt="Venture Logo"
-                className="w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl"
-              />
+        {/* Hero Image Background */}
+        <div className="absolute inset-0 opacity-20">
+          <img 
+            src={heroImage} 
+            alt="Venture Athletes" 
+            className="h-full w-full object-cover"
+          />
+        </div>
+        
+        <div className="container relative z-10 mx-auto px-4 py-16 md:py-24">
+          <div className="grid gap-8 md:grid-cols-2 items-center">
+            <div className="text-center md:text-left animate-fade-in">
+              <div className="mb-6 flex justify-center md:justify-start">
+                <img 
+                  src={ventureLogoImage} 
+                  alt="Venture Logo" 
+                  className="h-20 md:h-28 w-auto drop-shadow-2xl"
+                />
+              </div>
+              
+              <h1 className="mb-4 text-4xl font-bold text-white md:text-6xl lg:text-7xl">
+                Join Venture
+              </h1>
+              <p className="mb-6 text-lg text-white/90 md:text-xl lg:text-2xl">
+                Take the next step in your athletic journey with America's premier sports representation agency
+              </p>
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start text-white/80 text-sm md:text-base">
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-accent-bright" />
+                  <span>NCAA Placements</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-accent-bright" />
+                  <span>Professional Guidance</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-2 w-2 rounded-full bg-accent-bright" />
+                  <span>Success Stories</span>
+                </div>
+              </div>
             </div>
             
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black tracking-tight animate-in fade-in slide-in-from-top duration-700 delay-100">
-              Join Venture
-            </h1>
-            
-            <p className="text-xl md:text-2xl text-primary-foreground/90 max-w-2xl mx-auto leading-relaxed animate-in fade-in slide-in-from-top duration-700 delay-200">
-              Take the next step in your athletic journey. Fill out the form below and our team will reach out to discuss opportunities.
-            </p>
+            <div className="hidden md:block animate-fade-in">
+              <img 
+                src={teamImage} 
+                alt="Team of the Year" 
+                className="w-full h-auto rounded-lg shadow-2xl"
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Form Section */}
-      <div className="container mx-auto px-4 py-16 md:py-24">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="text-center space-y-4 animate-in fade-in slide-in-from-bottom duration-500">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">
-              Start Your Application
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We're looking for talented athletes who are passionate and committed. Complete the form below and we'll be in touch within 24-48 hours.
-            </p>
-          </div>
+      <div className="bg-gradient-to-b from-background to-secondary/10 py-12 md:py-20">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-4xl">
+            <div className="mb-10 text-center">
+              <h2 className="mb-4 text-3xl font-bold text-foreground md:text-5xl bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                VentureSportsUSA Player Evaluation Form
+              </h2>
+              <p className="text-muted-foreground text-lg">
+                Complete this comprehensive evaluation to help us understand your athletic profile and career goals. Our team will review your application and contact you within 24 hours.
+              </p>
+            </div>
 
-          <div className="animate-in fade-in slide-in-from-bottom duration-700 delay-100">
-            <PlayerLeadForm />
-          </div>
+            <div className="rounded-xl bg-card p-6 shadow-2xl md:p-10 border-2 border-primary/20 backdrop-blur-sm">
+              <PlayerLeadForm />
+            </div>
 
-          <div className="text-center text-sm text-muted-foreground pt-8 animate-in fade-in duration-700 delay-200">
-            <p>
-              Questions? Email us at{" "}
-              <a
-                href="mailto:info@venture.com"
-                className="text-primary hover:text-accent-blue transition-colors duration-200 font-semibold"
-              >
-                info@venture.com
-              </a>
-            </p>
+            <div className="mt-8 text-center space-y-2">
+              <p className="text-sm text-muted-foreground">
+                Have questions about the application process?
+              </p>
+              <p className="text-sm">
+                <a
+                  href="mailto:info@venturesports.com"
+                  className="text-primary hover:text-primary-dark font-semibold transition-colors"
+                >
+                  Contact our team →
+                </a>
+              </p>
+            </div>
           </div>
         </div>
       </div>

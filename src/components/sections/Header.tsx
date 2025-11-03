@@ -24,9 +24,7 @@ export const Header = ({ repId }: HeaderProps) => {
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
-    // Only show settings if authenticated AND viewing own page (no repId) OR if repId matches user
-    const isOwnPage = !repId || (session?.user?.id === repId);
-    setIsAuthenticated(!!session && isOwnPage);
+    setIsAuthenticated(!!session);
   };
 
   const loadUserSettings = async () => {
@@ -104,25 +102,28 @@ export const Header = ({ repId }: HeaderProps) => {
                 <span className="hidden lg:inline">Contact Us</span>
               </a>
             )}
-            {isAuthenticated ? (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => navigate("/settings")}
-                className="flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                <span className="hidden lg:inline">Settings</span>
-              </Button>
-            ) : (
-              <Button
-                variant="default"
-                size="sm"
-                onClick={() => navigate("/auth")}
-                className="flex items-center gap-2"
-              >
-                <span>Sales Login</span>
-              </Button>
+            {/* Only show auth buttons when NOT viewing a shareable link (no repId) */}
+            {!repId && (
+              isAuthenticated ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate("/settings")}
+                  className="flex items-center gap-2"
+                >
+                  <Settings className="w-4 h-4" />
+                  <span className="hidden lg:inline">Settings</span>
+                </Button>
+              ) : (
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={() => navigate("/auth")}
+                  className="flex items-center gap-2"
+                >
+                  <span>Sales Login</span>
+                </Button>
+              )
             )}
           </div>
         </div>

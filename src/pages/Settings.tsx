@@ -73,6 +73,23 @@ export default function Settings() {
         throw new Error("Username can only contain lowercase letters, numbers, and hyphens");
       }
 
+      // Check if username is already taken by another user
+      if (username) {
+        const { data: existingUser, error: checkError } = await supabase
+          .from("user_settings")
+          .select("user_id")
+          .eq("username", username)
+          .maybeSingle();
+
+        if (checkError) {
+          console.error("Error checking username:", checkError);
+        }
+
+        if (existingUser && existingUser.user_id !== user.id) {
+          throw new Error(`Username "${username}" is already taken. Please choose another one.`);
+        }
+      }
+
       const { error } = await supabase
         .from("user_settings")
         .upsert({
@@ -82,18 +99,28 @@ export default function Settings() {
           email: email,
           pipedrive_api_token: pipedriveApiToken,
           pipedrive_domain: pipedriveDomain,
+        }, {
+          onConflict: "user_id"
         });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Save error:", error);
+        // Check for duplicate key error
+        if (error.code === "23505") {
+          throw new Error(`Username "${username}" is already taken. Please choose another one.`);
+        }
+        throw error;
+      }
 
       toast({
         title: "Success",
         description: "Settings saved successfully!",
       });
     } catch (error: any) {
+      console.error("Settings save error:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "Failed to save settings",
         variant: "destructive",
       });
     } finally {

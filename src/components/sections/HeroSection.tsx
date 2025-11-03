@@ -9,7 +9,7 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
       {/* Animated gradient background */}
       <div className="absolute inset-0 bg-gradient-to-br from-[hsl(220,75%,25%)] via-[hsl(220,70%,20%)] to-[hsl(220,75%,15%)]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,_rgba(59,130,246,0.15)_0%,_transparent_50%)]" />
@@ -96,7 +96,7 @@ export const HeroSection = () => {
           </div>
 
           {/* Enhanced CTA button */}
-          <div className="animate-fade-in">
+          <div className="animate-fade-in mb-20">
             <Button 
               size="lg" 
               onClick={scrollToForm}
@@ -110,7 +110,7 @@ export const HeroSection = () => {
       </div>
       
       {/* Enhanced scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
         <div className="flex flex-col items-center gap-2">
           <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2 hover:border-accent-blue transition-colors">
             <div className="w-1.5 h-3 bg-accent-blue rounded-full animate-pulse"></div>

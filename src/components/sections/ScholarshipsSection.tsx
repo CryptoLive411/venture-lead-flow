@@ -106,16 +106,27 @@ export const ScholarshipsSection = () => {
         </div>
 
         {/* Divisions */}
-        <div className="max-w-5xl mx-auto">
-          <h3 className="text-3xl font-bold text-foreground mb-8 text-center">College System Divisions</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {divisions.map((division) => (
+        <div className="max-w-6xl mx-auto">
+          <h3 className="text-3xl font-bold text-foreground mb-12 text-center">College System Divisions</h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {divisions.map((division, index) => (
               <div 
                 key={division.name}
-                className="bg-card rounded-xl p-4 border border-border hover:border-primary transition-all"
+                className="group relative bg-gradient-to-br from-card to-card/50 rounded-2xl p-6 border-2 border-border hover:border-primary/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1"
               >
-                <div className="font-bold text-foreground mb-1">{division.name}</div>
-                <div className="text-sm text-muted-foreground">{division.type}</div>
+                {/* Decorative number */}
+                <div className="absolute top-2 right-2 text-4xl font-bold text-primary/5">
+                  {String(index + 1).padStart(2, '0')}
+                </div>
+                
+                <div className="relative">
+                  <div className="inline-block px-4 py-1.5 bg-gradient-to-r from-primary/20 to-accent-blue/20 rounded-full mb-4">
+                    <span className="font-bold text-primary text-lg">{division.name}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
+                    {division.type}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

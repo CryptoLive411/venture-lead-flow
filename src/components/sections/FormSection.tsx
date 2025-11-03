@@ -1,7 +1,11 @@
 import { PlayerLeadForm } from "@/components/PlayerLeadForm";
 import { Sparkles } from "lucide-react";
 
-export const FormSection = () => {
+interface FormSectionProps {
+  repId?: string;
+}
+
+export const FormSection = ({ repId }: FormSectionProps) => {
   return (
     <section id="evaluation-form" className="relative py-20 md:py-32 bg-gradient-to-b from-secondary/30 via-background to-[hsl(220,75%,15%)] overflow-hidden">
       {/* Decorative gradient orbs */}
@@ -27,7 +31,7 @@ export const FormSection = () => {
             {/* Gradient border effect */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent-blue/10 rounded-3xl -z-10" />
             
-            <PlayerLeadForm />
+            <PlayerLeadForm repId={repId} />
           </div>
 
           <div className="mt-12 text-center space-y-3 bg-card/50 backdrop-blur-sm rounded-2xl p-6 border border-border">

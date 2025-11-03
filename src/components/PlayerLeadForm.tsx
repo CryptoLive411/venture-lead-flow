@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
-import { useSearchParams } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -80,10 +79,13 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export const PlayerLeadForm = () => {
+interface PlayerLeadFormProps {
+  repId?: string;
+}
+
+export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-  const [searchParams] = useSearchParams();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -112,8 +114,6 @@ export const PlayerLeadForm = () => {
     console.log("Submitting lead to Pipedrive:", values);
 
     try {
-      const repId = searchParams.get("rep");
-      
       if (!repId) {
         throw new Error("Invalid link. Please use the link provided by your sales representative.");
       }

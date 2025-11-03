@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ventureLogoImage from "@/assets/venture-logo-new.png";
 import { Phone, Mail, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
-export const Header = () => {
+interface HeaderProps {
+  repId?: string;
+}
+
+export const Header = ({ repId }: HeaderProps) => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userSettings, setUserSettings] = useState<{
     phone_number: string | null;
@@ -17,7 +20,7 @@ export const Header = () => {
   useEffect(() => {
     checkAuth();
     loadUserSettings();
-  }, []);
+  }, [repId]);
 
   const checkAuth = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -26,8 +29,6 @@ export const Header = () => {
 
   const loadUserSettings = async () => {
     try {
-      const repId = searchParams.get("rep");
-      
       if (repId) {
         // Load settings for the specific rep (for public form view)
         const { data, error } = await supabase

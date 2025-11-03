@@ -12,6 +12,7 @@ import { Copy } from "lucide-react";
 export default function Settings() {
   const [loading, setLoading] = useState(false);
   const [userId, setUserId] = useState("");
+  const [username, setUsername] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [pipedriveApiToken, setPipedriveApiToken] = useState("");
@@ -44,6 +45,7 @@ export default function Settings() {
       if (error && error.code !== "PGRST116") throw error;
 
       if (data) {
+        setUsername(data.username || "");
         setPhoneNumber(data.phone_number || "");
         setEmail(data.email || "");
         setPipedriveApiToken(data.pipedrive_api_token || "");
@@ -66,10 +68,16 @@ export default function Settings() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
+      // Validate username format
+      if (username && !/^[a-z0-9-]+$/.test(username)) {
+        throw new Error("Username can only contain lowercase letters, numbers, and hyphens");
+      }
+
       const { error } = await supabase
         .from("user_settings")
         .upsert({
           user_id: user.id,
+          username: username || null,
           phone_number: phoneNumber,
           email: email,
           pipedrive_api_token: pipedriveApiToken,
@@ -99,7 +107,9 @@ export default function Settings() {
   };
 
   const copyShareableLink = () => {
-    const link = `${window.location.origin}?rep=${userId}`;
+    const link = username 
+      ? `${window.location.origin}/ventureplayerfillout-${username}`
+      : `${window.location.origin}?rep=${userId}`;
     navigator.clipboard.writeText(link);
     toast({
       title: "Copied!",
@@ -122,7 +132,9 @@ export default function Settings() {
             <CardContent>
               <div className="flex gap-2">
                 <Input
-                  value={`${window.location.origin}?rep=${userId}`}
+                  value={username 
+                    ? `${window.location.origin}/ventureplayerfillout-${username}`
+                    : `${window.location.origin}?rep=${userId}`}
                   readOnly
                   className="font-mono text-sm"
                 />
@@ -130,6 +142,11 @@ export default function Settings() {
                   <Copy className="w-4 h-4" />
                 </Button>
               </div>
+              {!username && (
+                <p className="text-sm text-muted-foreground mt-2">
+                  Set a username below to get a custom link like: ventureplayerfillout-yourname
+                </p>
+              )}
             </CardContent>
           </Card>
 
@@ -142,6 +159,24 @@ export default function Settings() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSave} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="username">Your Username</Label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">ventureplayerfillout-</span>
+                    <Input
+                      id="username"
+                      type="text"
+                      placeholder="andrewjayyosi"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                      className="flex-1"
+                    />
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Only lowercase letters, numbers, and hyphens. Example: andrewjayyosi
+                  </p>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="phone">Phone Number</Label>
                   <Input

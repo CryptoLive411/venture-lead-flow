@@ -102,7 +102,7 @@ export const Header = ({ repId }: HeaderProps) => {
                 <span className="hidden lg:inline">Contact Us</span>
               </a>
             )}
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <Button
                 variant="outline"
                 size="sm"
@@ -111,6 +111,15 @@ export const Header = ({ repId }: HeaderProps) => {
               >
                 <Settings className="w-4 h-4" />
                 <span className="hidden lg:inline">Settings</span>
+              </Button>
+            ) : (
+              <Button
+                variant="default"
+                size="sm"
+                onClick={() => navigate("/auth")}
+                className="flex items-center gap-2"
+              >
+                <span>Sales Login</span>
               </Button>
             )}
           </div>

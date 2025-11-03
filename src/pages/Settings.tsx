@@ -134,10 +134,10 @@ export default function Settings() {
   };
 
   const copyShareableLink = () => {
-    const customDomain = "venturesportsform.com";
+    const baseUrl = window.location.origin;
     const link = username 
-      ? `https://${customDomain}/${username}`
-      : `https://${customDomain}?rep=${userId}`;
+      ? `${baseUrl}/${username}`
+      : `${baseUrl}?rep=${userId}`;
     navigator.clipboard.writeText(link);
     toast({
       title: "Copied!",
@@ -161,8 +161,8 @@ export default function Settings() {
               <div className="flex gap-2">
                 <Input
                   value={username 
-                    ? `https://venturesportsform.com/${username}`
-                    : `https://venturesportsform.com?rep=${userId}`}
+                    ? `${window.location.origin}/${username}`
+                    : `${window.location.origin}?rep=${userId}`}
                   readOnly
                   className="font-mono text-sm"
                 />
@@ -197,7 +197,7 @@ export default function Settings() {
                     onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Only lowercase letters, numbers, and hyphens. Your link will be: venturesportsform.com/{username || "yourname"}
+                    Only lowercase letters, numbers, and hyphens. Your link will be: {window.location.hostname}/{username || "yourname"}
                   </p>
                 </div>
 

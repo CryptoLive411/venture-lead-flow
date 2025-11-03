@@ -2,3 +2,6 @@ project_id = "emcoxlfyjbtbktpgsieo"
 
 [functions.submit-lead]
 verify_jwt = false
+
+[functions.get-rep-contact-info]
+verify_jwt = false

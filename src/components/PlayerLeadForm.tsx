@@ -111,7 +111,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    console.log("Submitting lead to Pipedrive:", values);
+    console.log("Submitting lead form");
 
     try {
       if (!repId) {
@@ -126,11 +126,11 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       });
 
       if (error) {
-        console.error("Error submitting lead:", error);
+        console.error("Error submitting lead:", error.message);
         throw error;
       }
 
-      console.log("Lead submitted successfully:", data);
+      console.log("Lead submitted successfully");
 
       toast({
         title: "Success!",

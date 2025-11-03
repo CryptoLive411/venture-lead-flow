@@ -1,10 +1,32 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
+
+// Validation schema for incoming lead data
+const leadSchema = z.object({
+  fullName: z.string().trim().min(2).max(100),
+  email: z.string().trim().email().max(255),
+  phoneNumber: z.string().trim().min(10).max(20),
+  currentClub: z.string().trim().max(100),
+  age: z.string().trim().max(10),
+  position: z.string().trim().max(50),
+  nationality: z.string().trim().max(100),
+  highschoolGPA: z.string().trim().max(20),
+  highschoolGradYear: z.string().trim().max(10),
+  visaAssistance: z.string().trim().max(10),
+  estimatedBudget: z.string().trim().max(50),
+  preferredLeague: z.array(z.string().max(100)).max(10),
+  preferredDivision: z.array(z.string().max(50)).max(10),
+  hasHighlightTape: z.string().trim().max(10),
+  highlightsLink: z.string().trim().url().max(500).optional(),
+  callAvailability: z.string().trim().max(100),
+  repId: z.string().uuid(),
+});
 
 interface LeadData {
   fullName: string;
@@ -33,12 +55,10 @@ serve(async (req: Request) => {
   }
 
   try {
-    const leadData: LeadData = await req.json();
-    console.log("Received lead data:", leadData);
-
-    if (!leadData.repId) {
-      throw new Error("Sales representative ID is required");
-    }
+    // Parse and validate incoming data
+    const rawData = await req.json();
+    const leadData = leadSchema.parse(rawData);
+    console.log("Lead submission received for repId:", leadData.repId);
 
     // Create Supabase client
     const supabase = createClient(
@@ -89,7 +109,7 @@ serve(async (req: Request) => {
 
     const personData = await personResponse.json();
     const personId = personData.data.id;
-    console.log("Created person in Pipedrive:", personId);
+    console.log("Created person in Pipedrive");
 
     // Step 2: Create Deal in Pipedrive with detailed notes
     const dealTitle = `${leadData.fullName} - College Soccer Application`;
@@ -146,7 +166,7 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
 
     const dealData = await dealResponse.json();
     const dealId = dealData.data.id;
-    console.log("Created deal in Pipedrive:", dealId);
+    console.log("Created deal in Pipedrive");
 
     // Step 3: Add notes to the deal
     const noteResponse = await fetch(
@@ -194,8 +214,7 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
     if (!activityResponse.ok) {
       console.error("Failed to create activity, but deal was created successfully");
     } else {
-      const activityData = await activityResponse.json();
-      console.log("Created activity in Pipedrive:", activityData.data.id);
+      console.log("Created activity in Pipedrive");
     }
 
     return new Response(
@@ -211,7 +230,23 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
       }
     );
   } catch (error) {
-    console.error("Error in submit-lead function:", error);
+    console.error("Error in submit-lead function:", error instanceof Error ? error.message : "Unknown error");
+    
+    // Handle validation errors
+    if (error instanceof z.ZodError) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          error: "Invalid form data",
+          details: error.errors,
+        }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+    
     const errorMessage = error instanceof Error ? error.message : "Failed to submit lead to Pipedrive";
     return new Response(
       JSON.stringify({

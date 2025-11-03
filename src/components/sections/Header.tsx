@@ -30,20 +30,21 @@ export const Header = ({ repId }: HeaderProps) => {
   const loadUserSettings = async () => {
     try {
       if (repId) {
-        // Load settings for the specific rep (for public form view)
-        const { data, error } = await supabase
-          .from("user_settings")
-          .select("phone_number, email")
-          .eq("user_id", repId)
-          .single();
+        // Load settings for the specific rep using secure edge function
+        const { data, error } = await supabase.functions.invoke("get-rep-contact-info", {
+          body: { repId },
+        });
 
-        if (!error && data) {
-          setUserSettings(data);
+        if (!error && data?.success) {
+          setUserSettings({
+            phone_number: data.phoneNumber,
+            email: data.email,
+          });
           return;
         }
       }
 
-      // Load authenticated user's own settings
+      // Load authenticated user's own settings (RLS allows this)
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -54,13 +55,13 @@ export const Header = ({ repId }: HeaderProps) => {
         .single();
 
       if (error && error.code !== "PGRST116") {
-        console.error("Error loading settings:", error);
+        console.error("Error loading settings:", error.message);
         return;
       }
 
       setUserSettings(data);
     } catch (error) {
-      console.error("Error loading user settings:", error);
+      console.error("Error loading user settings");
     }
   };
 

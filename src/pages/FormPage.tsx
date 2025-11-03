@@ -29,15 +29,13 @@ const FormPage = () => {
           return;
         }
 
-        // If using slug format (ventureplayerfillout-username)
-        if (slug && slug.startsWith("ventureplayerfillout-")) {
-          const username = slug.replace("ventureplayerfillout-", "");
-          
+        // If using slug format (just the username)
+        if (slug) {
           const { data, error } = await supabase
             .from("user_settings")
             .select("user_id")
-            .eq("username", username)
-            .single();
+            .eq("username", slug)
+            .maybeSingle();
 
           if (error || !data) {
             console.error("Error finding user:", error);

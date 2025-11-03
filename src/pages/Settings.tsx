@@ -135,7 +135,7 @@ export default function Settings() {
 
   const copyShareableLink = () => {
     const link = username 
-      ? `${window.location.origin}/ventureplayerfillout-${username}`
+      ? `${window.location.origin}/${username}`
       : `${window.location.origin}?rep=${userId}`;
     navigator.clipboard.writeText(link);
     toast({
@@ -160,7 +160,7 @@ export default function Settings() {
               <div className="flex gap-2">
                 <Input
                   value={username 
-                    ? `${window.location.origin}/ventureplayerfillout-${username}`
+                    ? `${window.location.origin}/${username}`
                     : `${window.location.origin}?rep=${userId}`}
                   readOnly
                   className="font-mono text-sm"
@@ -171,7 +171,7 @@ export default function Settings() {
               </div>
               {!username && (
                 <p className="text-sm text-muted-foreground mt-2">
-                  Set a username below to get a custom link like: ventureplayerfillout-yourname
+                  Set a username below to get a custom link
                 </p>
               )}
             </CardContent>
@@ -188,19 +188,15 @@ export default function Settings() {
               <form onSubmit={handleSave} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="username">Your Username</Label>
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">ventureplayerfillout-</span>
-                    <Input
-                      id="username"
-                      type="text"
-                      placeholder="andrewjayyosi"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                      className="flex-1"
-                    />
-                  </div>
+                  <Input
+                    id="username"
+                    type="text"
+                    placeholder="andrewjayyosi"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  />
                   <p className="text-xs text-muted-foreground">
-                    Only lowercase letters, numbers, and hyphens. Example: andrewjayyosi
+                    Only lowercase letters, numbers, and hyphens. Your link will be: yourdomain.com/{username || "yourname"}
                   </p>
                 </div>
 

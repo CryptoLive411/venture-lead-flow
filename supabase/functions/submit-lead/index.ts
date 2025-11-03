@@ -1,7 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-
-const PIPEDRIVE_API_TOKEN = Deno.env.get("PIPEDRIVE_API_TOKEN");
-const PIPEDRIVE_DOMAIN = "venturesportsusa";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -34,8 +32,53 @@ serve(async (req: Request) => {
   }
 
   try {
+    // Get the authorization header
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      throw new Error("No authorization header");
+    }
+
+    // Create Supabase client with the user's token
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
+      {
+        global: {
+          headers: { Authorization: authHeader },
+        },
+      }
+    );
+
+    // Get the authenticated user
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
+
+    if (userError || !user) {
+      throw new Error("Unauthorized");
+    }
+
+    // Fetch user settings with their Pipedrive credentials
+    const { data: settings, error: settingsError } = await supabase
+      .from("user_settings")
+      .select("pipedrive_api_token, pipedrive_domain")
+      .eq("user_id", user.id)
+      .single();
+
+    if (settingsError || !settings) {
+      throw new Error("User settings not found. Please configure your Pipedrive settings.");
+    }
+
+    if (!settings.pipedrive_api_token || !settings.pipedrive_domain) {
+      throw new Error("Pipedrive credentials not configured. Please update your settings.");
+    }
+
     const leadData: LeadData = await req.json();
     console.log("Received lead data:", leadData);
+
+    const PIPEDRIVE_API_TOKEN = settings.pipedrive_api_token;
+    const PIPEDRIVE_DOMAIN = settings.pipedrive_domain;
 
     // Step 1: Create Person in Pipedrive
     const personResponse = await fetch(

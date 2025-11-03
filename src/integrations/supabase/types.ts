@@ -14,7 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_settings: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          phone_number: string | null
+          pipedrive_api_token: string | null
+          pipedrive_domain: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          phone_number?: string | null
+          pipedrive_api_token?: string | null
+          pipedrive_domain?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          phone_number?: string | null
+          pipedrive_api_token?: string | null
+          pipedrive_domain?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

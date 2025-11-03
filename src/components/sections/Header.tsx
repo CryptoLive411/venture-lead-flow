@@ -1,7 +1,43 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ventureLogoImage from "@/assets/venture-logo-new.png";
-import { Phone, Mail } from "lucide-react";
+import { Phone, Mail, Settings } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
 export const Header = () => {
+  const navigate = useNavigate();
+  const [userSettings, setUserSettings] = useState<{
+    phone_number: string | null;
+    email: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    loadUserSettings();
+  }, []);
+
+  const loadUserSettings = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("user_settings")
+        .select("phone_number, email")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Error loading settings:", error);
+        return;
+      }
+
+      setUserSettings(data);
+    } catch (error) {
+      console.error("Error loading user settings:", error);
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
       <div className="container mx-auto px-4">
@@ -21,20 +57,33 @@ export const Header = () => {
 
           {/* Contact Info */}
           <div className="flex items-center gap-4">
-            <a 
-              href="tel:5085891407"
-              className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            {userSettings?.phone_number && (
+              <a 
+                href={`tel:${userSettings.phone_number}`}
+                className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Phone className="w-4 h-4" />
+                <span className="hidden lg:inline">{userSettings.phone_number}</span>
+              </a>
+            )}
+            {userSettings?.email && (
+              <a 
+                href={`mailto:${userSettings.email}`}
+                className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+              >
+                <Mail className="w-4 h-4" />
+                <span className="hidden lg:inline">Contact Us</span>
+              </a>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => navigate("/settings")}
+              className="flex items-center gap-2"
             >
-              <Phone className="w-4 h-4" />
-              <span className="hidden lg:inline">(508) 589-1407</span>
-            </a>
-            <a 
-              href="mailto:ajayyosi@venturesportsusa.com"
-              className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-            >
-              <Mail className="w-4 h-4" />
-              <span className="hidden lg:inline">Contact Us</span>
-            </a>
+              <Settings className="w-4 h-4" />
+              <span className="hidden lg:inline">Settings</span>
+            </Button>
           </div>
         </div>
       </div>

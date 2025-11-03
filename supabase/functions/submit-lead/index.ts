@@ -142,6 +142,34 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
       console.log("Added detailed notes to deal");
     }
 
+    // Step 4: Create an activity for the scheduled call
+    const activityResponse = await fetch(
+      `https://${PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1/activities?api_token=${PIPEDRIVE_API_TOKEN}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          subject: `Call with ${leadData.fullName}`,
+          type: "call",
+          due_date: leadData.callAvailability,
+          due_time: "10:00", // Default time, can be customized
+          duration: "00:30", // 30 minutes default
+          deal_id: dealId,
+          person_id: personId,
+          note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}`,
+        }),
+      }
+    );
+
+    if (!activityResponse.ok) {
+      console.error("Failed to create activity, but deal was created successfully");
+    } else {
+      const activityData = await activityResponse.json();
+      console.log("Created activity in Pipedrive:", activityData.data.id);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import ventureLogoImage from "@/assets/venture-logo-new.png";
 import { Phone, Mail, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -7,17 +7,42 @@ import { Button } from "@/components/ui/button";
 
 export const Header = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userSettings, setUserSettings] = useState<{
     phone_number: string | null;
     email: string | null;
   } | null>(null);
 
   useEffect(() => {
+    checkAuth();
     loadUserSettings();
   }, []);
 
+  const checkAuth = async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    setIsAuthenticated(!!session);
+  };
+
   const loadUserSettings = async () => {
     try {
+      const repId = searchParams.get("rep");
+      
+      if (repId) {
+        // Load settings for the specific rep (for public form view)
+        const { data, error } = await supabase
+          .from("user_settings")
+          .select("phone_number, email")
+          .eq("user_id", repId)
+          .single();
+
+        if (!error && data) {
+          setUserSettings(data);
+          return;
+        }
+      }
+
+      // Load authenticated user's own settings
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
@@ -75,15 +100,17 @@ export const Header = () => {
                 <span className="hidden lg:inline">Contact Us</span>
               </a>
             )}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate("/settings")}
-              className="flex items-center gap-2"
-            >
-              <Settings className="w-4 h-4" />
-              <span className="hidden lg:inline">Settings</span>
-            </Button>
+            {isAuthenticated && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate("/settings")}
+                className="flex items-center gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                <span className="hidden lg:inline">Settings</span>
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -7,9 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/sections/Header";
 import { useNavigate } from "react-router-dom";
+import { Copy } from "lucide-react";
 
 export default function Settings() {
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [email, setEmail] = useState("");
   const [pipedriveApiToken, setPipedriveApiToken] = useState("");
@@ -18,18 +20,25 @@ export default function Settings() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadSettings();
+    checkAuth();
   }, []);
 
-  const loadSettings = async () => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
+  const checkAuth = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      navigate("/auth");
+      return;
+    }
+    setUserId(user.id);
+    loadSettings(user.id);
+  };
 
+  const loadSettings = async (userId: string) => {
+    try {
       const { data, error } = await supabase
         .from("user_settings")
         .select("*")
-        .eq("user_id", user.id)
+        .eq("user_id", userId)
         .single();
 
       if (error && error.code !== "PGRST116") throw error;
@@ -86,14 +95,44 @@ export default function Settings() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    navigate("/");
+    navigate("/auth");
+  };
+
+  const copyShareableLink = () => {
+    const link = `${window.location.origin}?rep=${userId}`;
+    navigator.clipboard.writeText(link);
+    toast({
+      title: "Copied!",
+      description: "Your shareable link has been copied to clipboard",
+    });
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <div className="container mx-auto px-4 pt-32 pb-16">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Your Shareable Link</CardTitle>
+              <CardDescription>
+                Share this link with leads to track submissions to your Pipedrive
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-2">
+                <Input
+                  value={`${window.location.origin}?rep=${userId}`}
+                  readOnly
+                  className="font-mono text-sm"
+                />
+                <Button onClick={copyShareableLink} variant="outline">
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
               <CardTitle>Settings</CardTitle>

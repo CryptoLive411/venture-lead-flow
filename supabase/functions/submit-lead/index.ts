@@ -23,6 +23,7 @@ interface LeadData {
   hasHighlightTape: string;
   highlightsLink?: string;
   callAvailability: string;
+  repId: string;
 }
 
 serve(async (req: Request) => {
@@ -32,50 +33,34 @@ serve(async (req: Request) => {
   }
 
   try {
-    // Get the authorization header
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      throw new Error("No authorization header");
+    const leadData: LeadData = await req.json();
+    console.log("Received lead data:", leadData);
+
+    if (!leadData.repId) {
+      throw new Error("Sales representative ID is required");
     }
 
-    // Create Supabase client with the user's token
+    // Create Supabase client
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
-      Deno.env.get("SUPABASE_ANON_KEY") ?? "",
-      {
-        global: {
-          headers: { Authorization: authHeader },
-        },
-      }
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    // Get the authenticated user
-    const {
-      data: { user },
-      error: userError,
-    } = await supabase.auth.getUser();
-
-    if (userError || !user) {
-      throw new Error("Unauthorized");
-    }
-
-    // Fetch user settings with their Pipedrive credentials
+    // Fetch sales rep settings with their Pipedrive credentials
     const { data: settings, error: settingsError } = await supabase
       .from("user_settings")
       .select("pipedrive_api_token, pipedrive_domain")
-      .eq("user_id", user.id)
+      .eq("user_id", leadData.repId)
       .single();
 
     if (settingsError || !settings) {
-      throw new Error("User settings not found. Please configure your Pipedrive settings.");
+      console.error("Settings error:", settingsError);
+      throw new Error("Sales representative settings not found.");
     }
 
     if (!settings.pipedrive_api_token || !settings.pipedrive_domain) {
-      throw new Error("Pipedrive credentials not configured. Please update your settings.");
+      throw new Error("Sales representative Pipedrive credentials not configured.");
     }
-
-    const leadData: LeadData = await req.json();
-    console.log("Received lead data:", leadData);
 
     const PIPEDRIVE_API_TOKEN = settings.pipedrive_api_token;
     const PIPEDRIVE_DOMAIN = settings.pipedrive_domain;

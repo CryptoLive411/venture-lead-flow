@@ -1,17 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
-export const Auth = () => {
+export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        navigate("/settings");
+      }
+    });
+  }, [navigate]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,16 +39,21 @@ export const Auth = () => {
           title: "Success",
           description: "Logged in successfully!",
         });
+        navigate("/settings");
       } else {
         const { error } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/settings`,
+          },
         });
         if (error) throw error;
         toast({
           title: "Success",
           description: "Account created successfully!",
         });
+        navigate("/settings");
       }
     } catch (error: any) {
       toast({
@@ -54,11 +70,11 @@ export const Auth = () => {
     <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-background to-primary/5">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>{isLogin ? "Login" : "Sign Up"}</CardTitle>
+          <CardTitle>{isLogin ? "Sales Login" : "Sales Sign Up"}</CardTitle>
           <CardDescription>
             {isLogin
-              ? "Enter your credentials to access your account"
-              : "Create an account to get started"}
+              ? "Enter your credentials to access your sales dashboard"
+              : "Create a sales account to manage your leads"}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -105,4 +121,4 @@ export const Auth = () => {
       </Card>
     </div>
   );
-};
+}

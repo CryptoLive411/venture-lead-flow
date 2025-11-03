@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { useSearchParams } from "react-router-dom";
 import {
   Form,
   FormControl,
@@ -82,6 +83,7 @@ type FormValues = z.infer<typeof formSchema>;
 export const PlayerLeadForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -110,16 +112,16 @@ export const PlayerLeadForm = () => {
     console.log("Submitting lead to Pipedrive:", values);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const repId = searchParams.get("rep");
       
-      if (!session) {
-        throw new Error("You must be logged in to submit a lead");
+      if (!repId) {
+        throw new Error("Invalid link. Please use the link provided by your sales representative.");
       }
 
       const { data, error } = await supabase.functions.invoke("submit-lead", {
-        body: values,
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
+        body: {
+          ...values,
+          repId,
         },
       });
 
@@ -140,7 +142,7 @@ export const PlayerLeadForm = () => {
       console.error("Failed to submit lead:", error);
       toast({
         title: "Error",
-        description: "Failed to submit your application. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to submit your application. Please try again.",
         variant: "destructive",
       });
     } finally {

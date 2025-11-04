@@ -28,6 +28,7 @@ const leadSchema = z.object({
   }),
   callAvailability: z.string().trim().max(100),
   callTime: z.string().trim().max(20).optional(),
+  timezone: z.string().trim().max(100).optional(),
   repId: z.string().uuid(),
 });
 
@@ -49,6 +50,7 @@ interface LeadData {
   highlightsLink?: string;
   callAvailability: string;
   callTime?: string;
+  timezone?: string;
   repId: string;
 }
 
@@ -195,6 +197,10 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
     }
 
     // Step 4: Create an activity for the scheduled call
+    // Note about timezone handling:
+    // The user's timezone is captured and included in the note for reference
+    const timezoneNote = leadData.timezone ? ` (${leadData.timezone} timezone)` : " (user's local time)";
+    
     const activityResponse = await fetch(
       `https://${PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1/activities?api_token=${PIPEDRIVE_API_TOKEN}`,
       {
@@ -210,7 +216,7 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
           duration: "00:30", // 30 minutes default
           deal_id: dealId,
           person_id: personId,
-          note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}${leadData.callTime ? ` at ${leadData.callTime}` : ""}`,
+          note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}${leadData.callTime ? ` at ${leadData.callTime}${timezoneNote}` : ""}`,
         }),
       }
     );

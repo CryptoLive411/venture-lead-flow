@@ -77,6 +77,7 @@ const formSchema = z.object({
     .string()
     .min(1, { message: "Please select when you're available" }),
   callTime: z.string().optional(),
+  timezone: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -122,9 +123,13 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
         throw new Error("Invalid link. Please use the link provided by your sales representative.");
       }
 
+      // Add user's timezone to the submission
+      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
       const { data, error } = await supabase.functions.invoke("submit-lead", {
         body: {
           ...values,
+          timezone,
           repId,
         },
       });

@@ -32,6 +32,13 @@ const leadSchema = z.object({
   repId: z.string().uuid(),
 });
 
+// Helper function to get timezone offset in milliseconds
+function getTimezoneOffset(timezone: string, date: Date): number {
+  const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
+  const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
+  return tzDate.getTime() - utcDate.getTime();
+}
+
 interface LeadData {
   fullName: string;
   email: string;
@@ -75,7 +82,7 @@ serve(async (req: Request) => {
     // Fetch sales rep settings with their Pipedrive credentials
     const { data: settings, error: settingsError } = await supabase
       .from("user_settings")
-      .select("pipedrive_api_token, pipedrive_domain")
+      .select("pipedrive_api_token, pipedrive_domain, timezone")
       .eq("user_id", leadData.repId)
       .single();
 
@@ -197,9 +204,42 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
     }
 
     // Step 4: Create an activity for the scheduled call
-    // Note about timezone handling:
-    // The user's timezone is captured and included in the note for reference
-    const timezoneNote = leadData.timezone ? ` (${leadData.timezone} timezone)` : " (user's local time)";
+    // Convert time from user's timezone to sales rep's timezone
+    let convertedTime = leadData.callTime || "10:00";
+    let timezoneNote = "";
+    
+    if (leadData.callTime && leadData.timezone && settings.timezone) {
+      try {
+        // Parse the date and time in the user's timezone
+        const userTimezone = leadData.timezone;
+        const repTimezone = settings.timezone;
+        
+        // Create a date string in the user's timezone
+        const dateTimeString = `${leadData.callAvailability}T${leadData.callTime}:00`;
+        
+        // Convert to timestamp assuming user's timezone
+        const userDate = new Date(dateTimeString);
+        
+        // Get the timezone offset difference
+        const userOffset = getTimezoneOffset(userTimezone, userDate);
+        const repOffset = getTimezoneOffset(repTimezone, userDate);
+        const offsetDiff = repOffset - userOffset;
+        
+        // Adjust the time
+        const repDate = new Date(userDate.getTime() + offsetDiff);
+        const hours = String(repDate.getHours()).padStart(2, '0');
+        const minutes = String(repDate.getMinutes()).padStart(2, '0');
+        convertedTime = `${hours}:${minutes}`;
+        
+        timezoneNote = ` (converted from ${leadData.callTime} ${userTimezone} to ${convertedTime} ${repTimezone})`;
+        console.log(`Time conversion: ${leadData.callTime} ${userTimezone} → ${convertedTime} ${repTimezone}`);
+      } catch (error) {
+        console.error("Error converting timezone:", error);
+        timezoneNote = ` (${leadData.callTime} in ${leadData.timezone})`;
+      }
+    } else {
+      timezoneNote = leadData.timezone ? ` (${leadData.timezone} timezone)` : " (user's local time)";
+    }
     
     const activityResponse = await fetch(
       `https://${PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1/activities?api_token=${PIPEDRIVE_API_TOKEN}`,
@@ -212,11 +252,11 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
           subject: `Call with ${leadData.fullName}`,
           type: "call",
           due_date: leadData.callAvailability,
-          due_time: leadData.callTime || "10:00",
+          due_time: convertedTime,
           duration: "00:30", // 30 minutes default
           deal_id: dealId,
           person_id: personId,
-          note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}${leadData.callTime ? ` at ${leadData.callTime}${timezoneNote}` : ""}`,
+          note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}${leadData.callTime ? timezoneNote : ""}`,
         }),
       }
     );

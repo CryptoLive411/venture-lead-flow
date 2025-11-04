@@ -22,6 +22,7 @@ export type Database = {
           phone_number: string | null
           pipedrive_api_token: string | null
           pipedrive_domain: string | null
+          timezone: string | null
           updated_at: string
           user_id: string
           username: string | null
@@ -33,6 +34,7 @@ export type Database = {
           phone_number?: string | null
           pipedrive_api_token?: string | null
           pipedrive_domain?: string | null
+          timezone?: string | null
           updated_at?: string
           user_id: string
           username?: string | null
@@ -44,6 +46,7 @@ export type Database = {
           phone_number?: string | null
           pipedrive_api_token?: string | null
           pipedrive_domain?: string | null
+          timezone?: string | null
           updated_at?: string
           user_id?: string
           username?: string | null

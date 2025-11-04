@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Header } from "@/components/sections/Header";
 import { useNavigate } from "react-router-dom";
@@ -17,6 +18,7 @@ export default function Settings() {
   const [email, setEmail] = useState("");
   const [pipedriveApiToken, setPipedriveApiToken] = useState("");
   const [pipedriveDomain, setPipedriveDomain] = useState("venturesportsusa");
+  const [timezone, setTimezone] = useState("America/New_York");
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -50,6 +52,7 @@ export default function Settings() {
         setEmail(data.email || "");
         setPipedriveApiToken(data.pipedrive_api_token || "");
         setPipedriveDomain(data.pipedrive_domain || "venturesportsusa");
+        setTimezone(data.timezone || "America/New_York");
       }
     } catch (error: any) {
       toast({
@@ -99,6 +102,7 @@ export default function Settings() {
           email: email,
           pipedrive_api_token: pipedriveApiToken,
           pipedrive_domain: pipedriveDomain,
+          timezone: timezone,
         }, {
           onConflict: "user_id"
         });
@@ -259,6 +263,34 @@ export default function Settings() {
                   />
                   <p className="text-xs text-muted-foreground">
                     Your company name from your Pipedrive URL (e.g., company.pipedrive.com)
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="timezone">Your Timezone</Label>
+                  <Select value={timezone} onValueChange={setTimezone}>
+                    <SelectTrigger id="timezone">
+                      <SelectValue placeholder="Select your timezone" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="America/New_York">Eastern Time (ET)</SelectItem>
+                      <SelectItem value="America/Chicago">Central Time (CT)</SelectItem>
+                      <SelectItem value="America/Denver">Mountain Time (MT)</SelectItem>
+                      <SelectItem value="America/Los_Angeles">Pacific Time (PT)</SelectItem>
+                      <SelectItem value="America/Phoenix">Arizona (MST)</SelectItem>
+                      <SelectItem value="America/Anchorage">Alaska Time (AKT)</SelectItem>
+                      <SelectItem value="Pacific/Honolulu">Hawaii Time (HST)</SelectItem>
+                      <SelectItem value="Europe/London">London (GMT/BST)</SelectItem>
+                      <SelectItem value="Europe/Paris">Paris (CET/CEST)</SelectItem>
+                      <SelectItem value="Europe/Madrid">Madrid (CET/CEST)</SelectItem>
+                      <SelectItem value="Europe/Lisbon">Lisbon (WET/WEST)</SelectItem>
+                      <SelectItem value="Asia/Dubai">Dubai (GST)</SelectItem>
+                      <SelectItem value="Asia/Tokyo">Tokyo (JST)</SelectItem>
+                      <SelectItem value="Australia/Sydney">Sydney (AEDT/AEST)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Call times from leads will be converted to your timezone
                   </p>
                 </div>
 

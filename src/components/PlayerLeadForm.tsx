@@ -111,6 +111,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       highlightsLink: "",
       callAvailability: "",
       callTime: "",
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   });
 
@@ -123,13 +124,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
         throw new Error("Invalid link. Please use the link provided by your sales representative.");
       }
 
-      // Add user's timezone to the submission
-      const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
       const { data, error } = await supabase.functions.invoke("submit-lead", {
         body: {
           ...values,
-          timezone,
           repId,
         },
       });

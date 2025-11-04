@@ -23,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
   fullName: z
@@ -87,6 +88,7 @@ interface PlayerLeadFormProps {
 export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -135,16 +137,16 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       console.log("Lead submitted successfully");
 
       toast({
-        title: "Success!",
-        description: "Your application has been submitted. We'll contact you within 24 hours!",
+        title: t('form.successTitle'),
+        description: t('form.successMessage'),
       });
 
       form.reset();
     } catch (error) {
       console.error("Failed to submit lead:", error);
       toast({
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to submit your application. Please try again.",
+        title: t('form.errorTitle'),
+        description: error instanceof Error ? error.message : t('form.errorMessage'),
         variant: "destructive",
       });
     } finally {
@@ -161,9 +163,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="fullName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name *</FormLabel>
+                <FormLabel>{t('form.fullName')} *</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Doe" {...field} />
+                  <Input placeholder={t('form.fullNamePlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -175,9 +177,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email *</FormLabel>
+                <FormLabel>{t('form.email')} *</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="john@example.com" {...field} />
+                  <Input type="email" placeholder={t('form.emailPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -189,9 +191,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="phoneNumber"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Phone Number *</FormLabel>
+                <FormLabel>{t('form.phone')} *</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder="+1 (555) 000-0000" {...field} />
+                  <Input type="tel" placeholder={t('form.phonePlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -203,9 +205,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="currentClub"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Current Club *</FormLabel>
+                <FormLabel>{t('form.currentClub')} *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your current club" {...field} />
+                  <Input placeholder={t('form.currentClubPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -217,7 +219,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="age"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Age *</FormLabel>
+                <FormLabel>{t('form.age')} *</FormLabel>
                 <FormControl>
                   <Input type="number" placeholder="18" {...field} />
                 </FormControl>
@@ -231,9 +233,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="position"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Position *</FormLabel>
+                <FormLabel>{t('form.position')} *</FormLabel>
                 <FormControl>
-                  <Input placeholder="e.g., Midfielder, Forward, Defender" {...field} />
+                  <Input placeholder={t('form.positionPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -245,9 +247,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="nationality"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nationality *</FormLabel>
+                <FormLabel>{t('form.nationality')} *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Your nationality" {...field} />
+                  <Input placeholder={t('form.nationalityPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -259,7 +261,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="highschoolGPA"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Highschool GPA *</FormLabel>
+                <FormLabel>{t('form.gpa')} *</FormLabel>
                 <FormControl>
                   <Input placeholder="3.5" {...field} />
                 </FormControl>
@@ -273,7 +275,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="highschoolGradYear"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Highschool Graduation Year *</FormLabel>
+                <FormLabel>{t('form.gradYear')} *</FormLabel>
                 <FormControl>
                   <Input placeholder="2025" {...field} />
                 </FormControl>
@@ -287,16 +289,16 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="visaAssistance"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Do you need Visa Assistance? *</FormLabel>
+                <FormLabel>{t('form.visaAssistance')} *</FormLabel>
                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                   <FormControl>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select an option" />
+                      <SelectValue placeholder={t('form.selectOption')} />
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="yes">Yes</SelectItem>
-                    <SelectItem value="no">No</SelectItem>
+                    <SelectItem value="yes">{t('form.yes')}</SelectItem>
+                    <SelectItem value="no">{t('form.no')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -310,9 +312,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           name="estimatedBudget"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Estimated College Yearly Budget *</FormLabel>
+              <FormLabel>{t('form.budget')} *</FormLabel>
               <FormControl>
-                <Input placeholder="e.g., $50,000" {...field} />
+                <Input placeholder={t('form.budgetPlaceholder')} {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -324,9 +326,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           name="preferredLeague"
           render={() => (
             <FormItem>
-              <FormLabel>Preferred College League * (Select all that apply)</FormLabel>
+              <FormLabel>{t('form.preferredLeague')} *</FormLabel>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {["NCAA", "NAIA", "JUCO", "NJCAA", "Not Sure yet"].map((league) => (
+                {t('form.leagueOptions').split('|||').map((league) => (
                   <FormField
                     key={league}
                     control={form.control}
@@ -359,17 +361,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           name="preferredDivision"
           render={() => (
             <FormItem>
-              <FormLabel>Preferred College Division * (Select all that apply)</FormLabel>
+              <FormLabel>{t('form.preferredDivision')} *</FormLabel>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {[
-                  "NCAA D1",
-                  "NCAA D2",
-                  "NCAA D3",
-                  "NAIA D1-D3",
-                  "NJCAA D1-D3",
-                  "JUCO or Highschool Academy",
-                  "Not sure yet"
-                ].map((division) => (
+                {t('form.divisionOptions').split('|||').map((division) => (
                   <FormField
                     key={division}
                     control={form.control}
@@ -402,17 +396,17 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           name="hasHighlightTape"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Do you have a highlight tape made? *</FormLabel>
+              <FormLabel>{t('form.hasHighlightTape')} *</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select an option" />
+                    <SelectValue placeholder={t('form.selectOption')} />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="yes">Yes</SelectItem>
-                  <SelectItem value="no">No</SelectItem>
-                  <SelectItem value="almost">Almost</SelectItem>
+                  <SelectItem value="yes">{t('form.yes')}</SelectItem>
+                  <SelectItem value="no">{t('form.no')}</SelectItem>
+                  <SelectItem value="almost">{t('form.almost')}</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />
@@ -420,26 +414,28 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="highlightsLink"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Attach Highlights Link (Optional)</FormLabel>
-              <FormControl>
-                <Input 
-                  type="url" 
-                  placeholder="https://youtube.com/..." 
-                  {...field} 
-                />
-              </FormControl>
-              <FormDescription>
-                Link to your highlight video (YouTube, Vimeo, etc.)
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {form.watch("hasHighlightTape") === "yes" && (
+          <FormField
+            control={form.control}
+            name="highlightsLink"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('form.highlightsLink')} *</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="url" 
+                    placeholder="https://youtube.com/..." 
+                    {...field} 
+                  />
+                </FormControl>
+                <FormDescription>
+                  {t('form.highlightsLinkDescription')}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
@@ -447,7 +443,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="callAvailability"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>When are you free for a call? *</FormLabel>
+                <FormLabel>{t('form.callAvailability')} *</FormLabel>
                 <FormControl>
                   <Input 
                     type="date" 
@@ -464,7 +460,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             name="callTime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Preferred Call Time (Optional)</FormLabel>
+                <FormLabel>{t('form.callTime')}</FormLabel>
                 <FormControl>
                   <Input 
                     type="time" 
@@ -472,7 +468,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
                   />
                 </FormControl>
                 <FormDescription>
-                  Select your preferred time for the call
+                  {t('form.callTimeDescription')}
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -485,7 +481,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           disabled={isSubmitting}
           className="w-full h-12 text-base font-bold"
         >
-          {isSubmitting ? "Submitting..." : "Submit Application"}
+          {isSubmitting ? t('form.submitting') : t('form.submit')}
         </Button>
       </form>
     </Form>

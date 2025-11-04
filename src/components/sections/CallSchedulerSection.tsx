@@ -2,12 +2,14 @@ import { Button } from "@/components/ui/button";
 import { Calendar, Phone, Clock, CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface CallSchedulerSectionProps {
   repId?: string;
 }
 
 export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
+  const { t } = useLanguage();
   const [contactInfo, setContactInfo] = useState<{
     phone_number: string | null;
     email: string | null;
@@ -38,12 +40,8 @@ export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
 
     loadContactInfo();
   }, [repId]);
-  const benefits = [
-    "15-minute free consultation",
-    "Discuss your soccer career goals",
-    "Learn about scholarship opportunities",
-    "Get personalized pathway advice"
-  ];
+  
+  const benefits = t('callScheduler.benefits').split('|||');
 
   return (
     <section className="relative py-20 md:py-32 bg-gradient-to-b from-background via-primary/5 to-background overflow-hidden">
@@ -56,13 +54,13 @@ export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 mb-4 px-6 py-2 bg-primary/10 rounded-full border border-primary/20">
               <Calendar className="w-4 h-4 text-primary" />
-              <span className="text-sm font-semibold text-primary">Schedule Your Call</span>
+              <span className="text-sm font-semibold text-primary">{t('callScheduler.badge')}</span>
             </div>
             <h2 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-foreground via-primary to-foreground bg-clip-text text-transparent">
-              Let's Talk About Your Future
+              {t('callScheduler.title')}
             </h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Book a free consultation call with our team to discuss your college soccer journey
+              {t('callScheduler.subtitle')}
             </p>
           </div>
 
@@ -75,8 +73,8 @@ export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
                     <Phone className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-bold text-foreground">What to Expect</h3>
-                    <p className="text-sm text-muted-foreground">In your consultation</p>
+                    <h3 className="text-xl font-bold text-foreground">{t('callScheduler.whatToExpect')}</h3>
+                    <p className="text-sm text-muted-foreground">{t('callScheduler.inYourConsultation')}</p>
                   </div>
                 </div>
                 
@@ -94,10 +92,10 @@ export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
               <div className="bg-gradient-to-br from-primary/5 to-accent-blue/5 rounded-2xl p-6 border border-primary/20">
                 <div className="flex items-center gap-3 mb-3">
                   <Clock className="w-5 h-5 text-primary" />
-                  <span className="text-sm font-semibold text-foreground">Available Monday - Friday</span>
+                  <span className="text-sm font-semibold text-foreground">{t('callScheduler.available')}</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  9:00 AM - 6:00 PM EST
+                  {t('callScheduler.hours')}
                 </p>
               </div>
             </div>
@@ -111,8 +109,8 @@ export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
                   </div>
                   
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">Call Us Directly</h3>
-                    <p className="text-muted-foreground mb-6">Speak with us right now</p>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">{t('callScheduler.callDirectly')}</h3>
+                    <p className="text-muted-foreground mb-6">{t('callScheduler.speakNow')}</p>
                     
                     <a href={`tel:${contactInfo.phone_number}`}>
                       <Button 
@@ -130,13 +128,13 @@ export const CallSchedulerSection = ({ repId }: CallSchedulerSectionProps) => {
                       <div className="w-full border-t border-border"></div>
                     </div>
                     <div className="relative flex justify-center text-xs uppercase">
-                      <span className="bg-card px-4 text-muted-foreground font-medium">Or</span>
+                      <span className="bg-card px-4 text-muted-foreground font-medium">{t('callScheduler.or')}</span>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">Email Us</h3>
-                    <p className="text-muted-foreground mb-6">We'll respond within 24 hours</p>
+                    <h3 className="text-2xl font-bold text-foreground mb-2">{t('callScheduler.emailUs')}</h3>
+                    <p className="text-muted-foreground mb-6">{t('callScheduler.emailResponse')}</p>
                     
                     <a href={`mailto:${contactInfo.email}`}>
                       <Button 

@@ -39,27 +39,8 @@ export const en = {
     subtitle: "The American college system offers unparalleled opportunities for student-athletes to excel both academically and athletically",
     difficulties: "Difficulties at Home",
     advantages: "Advantages in USA",
-    difficultyList: [
-      "Non-supportive system for high-level student-athletes",
-      "Lack of programs covering academic-university needs for athletes",
-      "Difficulty combining training and competitions with classes",
-      "Absence of university tutors to support student-athletes",
-      "Insufficient scholarships and financial aid",
-      "Low importance of university sports",
-      "Academic and sports facilities far from each other",
-      "Must choose between high level sport or university studies"
-    ],
-    advantageList: [
-      "Support by the college system to combine studies and high-level sports",
-      "Financial aids through sports, academic and international scholarships",
-      "Training in an environment where student-athletes are valued and supported",
-      "Language: Achieve bilingual level in English",
-      "Professional opportunities: Boost your career after studies",
-      "Access to the most complete and advanced academic & sports facilities",
-      "Academic prestige of universities demonstrated by world rankings",
-      "International experience that increases personal, academic and professional growth",
-      "Cultural integration in one of the most influential countries in the world"
-    ],
+    difficultyList: "Non-supportive system for high-level student-athletes|||Lack of programs covering academic-university needs for athletes|||Difficulty combining training and competitions with classes|||Absence of university tutors to support student-athletes|||Insufficient scholarships and financial aid|||Low importance of university sports|||Academic and sports facilities far from each other|||Must choose between high level sport or university studies",
+    advantageList: "Support by the college system to combine studies and high-level sports|||Financial aids through sports, academic and international scholarships|||Training in an environment where student-athletes are valued and supported|||Language: Achieve bilingual level in English|||Professional opportunities: Boost your career after studies|||Access to the most complete and advanced academic & sports facilities|||Academic prestige of universities demonstrated by world rankings|||International experience that increases personal, academic and professional growth|||Cultural integration in one of the most influential countries in the world",
   },
   process: {
     badge: "Our Process",
@@ -68,43 +49,17 @@ export const en = {
     step1: {
       phase: "Step 1",
       title: "Get in Contact",
-      items: [
-        "Talk with a VENTURE representative",
-        "Send your Highlight videos",
-        "Send your School Documents",
-        "Schedule a call with team & family",
-        "Profile Analysis & Assessment",
-        "Define goals and possibilities",
-        "Commitment to a new adVENTURE"
-      ],
+      items: "Talk with a VENTURE representative|||Send your Highlight videos|||Send your School Documents|||Schedule a call with team & family|||Profile Analysis & Assessment|||Define goals and possibilities|||Commitment to a new adVENTURE",
     },
     step2: {
       phase: "Step 2",
       title: "Start Recruitment",
-      items: [
-        "Create E-Profile & Highlight Video",
-        "Organize personalized Google Drive",
-        "Academic documents translation",
-        "English Exams Preparation",
-        "Profile sent to College Coaches",
-        "Introduction with College Coaches",
-        "Possible Campus visits",
-        "College Commitment"
-      ],
+      items: "Create E-Profile & Highlight Video|||Organize personalized Google Drive|||Academic documents translation|||English Exams Preparation|||Profile sent to College Coaches|||Introduction with College Coaches|||Possible Campus visits|||College Commitment",
     },
     step3: {
       phase: "Step 3",
       title: "Logistics & Legal",
-      items: [
-        "University Academic Application",
-        "NCAA/NAIA registration",
-        "Official transcripts submission",
-        "School Acceptance",
-        "Bank Statement",
-        "F1 Student Visa",
-        "SEVIS & VISA Process",
-        "Book Flights to USA"
-      ],
+      items: "University Academic Application|||NCAA/NAIA registration|||Official transcripts submission|||School Acceptance|||Bank Statement|||F1 Student Visa|||SEVIS & VISA Process|||Book Flights to USA",
     },
   },
   scholarships: {
@@ -188,12 +143,7 @@ export const en = {
     subtitle: "Book a free consultation call with our team to discuss your college soccer journey",
     whatToExpect: "What to Expect",
     inYourConsultation: "In your consultation",
-    benefits: [
-      "15-minute free consultation",
-      "Discuss your soccer career goals",
-      "Learn about scholarship opportunities",
-      "Get personalized pathway advice"
-    ],
+    benefits: "15-minute free consultation|||Discuss your soccer career goals|||Learn about scholarship opportunities|||Get personalized pathway advice",
     available: "Available Monday - Friday",
     hours: "9:00 AM - 6:00 PM EST",
     callDirectly: "Call Us Directly",

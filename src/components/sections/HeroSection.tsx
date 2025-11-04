@@ -2,8 +2,10 @@ import { Button } from "@/components/ui/button";
 import ventureLogoImage from "@/assets/venture-logo-new.png";
 import heroImage from "@/assets/hero-soccer-stadium.jpg";
 import { ArrowRight, Trophy, Users, Star } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export const HeroSection = () => {
+  const { t } = useLanguage();
   const scrollToForm = () => {
     document.getElementById('evaluation-form')?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -57,14 +59,14 @@ export const HeroSection = () => {
           
           {/* Headline with gradient effect */}
           <h1 className="mb-8 text-5xl font-bold text-white md:text-7xl lg:text-8xl leading-tight animate-fade-in">
-            <span className="block mb-2">College Soccer</span>
+            <span className="block mb-2">{t('hero.title1')}</span>
             <span className="block bg-gradient-to-r from-accent-blue via-[hsl(200,100%,60%)] to-accent-blue bg-clip-text text-transparent animate-pulse">
-              Placement Consulting
+              {t('hero.title2')}
             </span>
           </h1>
           
           <p className="mb-12 text-lg text-white/80 md:text-xl lg:text-2xl max-w-4xl mx-auto leading-relaxed animate-fade-in font-light">
-            Founded in Florida with the goal of helping student-athletes from all over the world obtain an international education with a soccer scholarship
+            {t('hero.subtitle')}
           </p>
           
           {/* Enhanced stats grid */}
@@ -74,7 +76,7 @@ export const HeroSection = () => {
               <div className="relative flex flex-col items-center gap-3">
                 <Trophy className="w-8 h-8 text-accent-blue" />
                 <div className="text-4xl font-bold text-white">400+</div>
-                <div className="text-white/70 text-sm font-medium">Partner Universities</div>
+                <div className="text-white/70 text-sm font-medium">{t('hero.partnerUniversities')}</div>
               </div>
             </div>
             <div className="group relative bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-accent-blue/50 transition-all hover:bg-white/10 hover:scale-105 hover:shadow-2xl hover:shadow-accent-blue/20">
@@ -82,7 +84,7 @@ export const HeroSection = () => {
               <div className="relative flex flex-col items-center gap-3">
                 <Users className="w-8 h-8 text-accent-blue" />
                 <div className="text-4xl font-bold text-white">350+</div>
-                <div className="text-white/70 text-sm font-medium">Athletes Placed</div>
+                <div className="text-white/70 text-sm font-medium">{t('hero.athletesPlaced')}</div>
               </div>
             </div>
             <div className="group relative bg-white/5 backdrop-blur-xl rounded-2xl p-6 border border-white/10 hover:border-accent-blue/50 transition-all hover:bg-white/10 hover:scale-105 hover:shadow-2xl hover:shadow-accent-blue/20">
@@ -90,7 +92,7 @@ export const HeroSection = () => {
               <div className="relative flex flex-col items-center gap-3">
                 <Star className="w-8 h-8 text-accent-blue" />
                 <div className="text-4xl font-bold text-white">24hrs</div>
-                <div className="text-white/70 text-sm font-medium">Response Time</div>
+                <div className="text-white/70 text-sm font-medium">{t('hero.responseTime')}</div>
               </div>
             </div>
           </div>
@@ -102,7 +104,7 @@ export const HeroSection = () => {
               onClick={scrollToForm}
               className="group bg-gradient-to-r from-accent-blue to-[hsl(210,100%,60%)] hover:from-accent-blue/90 hover:to-[hsl(210,100%,70%)] text-white text-lg px-10 py-7 h-auto rounded-full shadow-2xl shadow-accent-blue/50 hover:shadow-accent-blue/70 hover:scale-105 transition-all duration-300 font-semibold"
             >
-              Start Your Journey
+              {t('hero.startJourney')}
               <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
           </div>
@@ -115,7 +117,7 @@ export const HeroSection = () => {
           <div className="w-6 h-10 border-2 border-white/50 rounded-full flex items-start justify-center p-2 hover:border-accent-blue transition-colors">
             <div className="w-1.5 h-3 bg-accent-blue rounded-full animate-pulse"></div>
           </div>
-          <span className="text-white/50 text-xs font-medium">Scroll</span>
+          <span className="text-white/50 text-xs font-medium">{t('hero.scroll')}</span>
         </div>
       </div>
     </section>

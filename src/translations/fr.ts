@@ -39,27 +39,8 @@ export const fr = {
     subtitle: "Le système universitaire américain offre des opportunités inégalées pour que les étudiants-athlètes excellent tant sur le plan académique qu'athlétique",
     difficulties: "Difficultés à la Maison",
     advantages: "Avantages aux États-Unis",
-    difficultyList: [
-      "Système non favorable pour les étudiants-athlètes de haut niveau",
-      "Manque de programmes couvrant les besoins académico-universitaires pour les athlètes",
-      "Difficulté à combiner entraînements et compétitions avec les cours",
-      "Absence de tuteurs universitaires pour soutenir les étudiants-athlètes",
-      "Bourses et aide financière insuffisantes",
-      "Faible importance du sport universitaire",
-      "Installations académiques et sportives éloignées les unes des autres",
-      "Doit choisir entre sport de haut niveau ou études universitaires"
-    ],
-    advantageList: [
-      "Soutien du système universitaire pour combiner études et sport de haut niveau",
-      "Aides financières via des bourses sportives, académiques et internationales",
-      "Entraînement dans un environnement où les étudiants-athlètes sont valorisés et soutenus",
-      "Langue: Atteindre un niveau bilingue en anglais",
-      "Opportunités professionnelles: Boostez votre carrière après les études",
-      "Accès aux installations académiques et sportives les plus complètes et avancées",
-      "Prestige académique des universités démontré par les classements mondiaux",
-      "Expérience internationale qui augmente la croissance personnelle, académique et professionnelle",
-      "Intégration culturelle dans l'un des pays les plus influents du monde"
-    ],
+    difficultyList: "Système non favorable pour les étudiants-athlètes de haut niveau|||Manque de programmes couvrant les besoins académico-universitaires pour les athlètes|||Difficulté à combiner entraînements et compétitions avec les cours|||Absence de tuteurs universitaires pour soutenir les étudiants-athlètes|||Bourses et aide financière insuffisantes|||Faible importance du sport universitaire|||Installations académiques et sportives éloignées les unes des autres|||Doit choisir entre sport de haut niveau ou études universitaires",
+    advantageList: "Soutien du système universitaire pour combiner études et sport de haut niveau|||Aides financières via des bourses sportives, académiques et internationales|||Entraînement dans un environnement où les étudiants-athlètes sont valorisés et soutenus|||Langue: Atteindre un niveau bilingue en anglais|||Opportunités professionnelles: Boostez votre carrière après les études|||Accès aux installations académiques et sportives les plus complètes et avancées|||Prestige académique des universités démontré par les classements mondiaux|||Expérience internationale qui augmente la croissance personnelle, académique et professionnelle|||Intégration culturelle dans l'un des pays les plus influents du monde",
   },
   process: {
     badge: "Notre Processus",
@@ -68,43 +49,17 @@ export const fr = {
     step1: {
       phase: "Étape 1",
       title: "Entrer en Contact",
-      items: [
-        "Parlez avec un représentant VENTURE",
-        "Envoyez vos vidéos Highlights",
-        "Envoyez vos Documents Scolaires",
-        "Planifiez un appel avec l'équipe et la famille",
-        "Analyse et Évaluation du Profil",
-        "Définir les objectifs et les possibilités",
-        "Engagement dans une nouvelle adVENTURE"
-      ],
+      items: "Parlez avec un représentant VENTURE|||Envoyez vos vidéos Highlights|||Envoyez vos Documents Scolaires|||Planifiez un appel avec l'équipe et la famille|||Analyse et Évaluation du Profil|||Définir les objectifs et les possibilités|||Engagement dans une nouvelle adVENTURE",
     },
     step2: {
       phase: "Étape 2",
       title: "Commencer le Recrutement",
-      items: [
-        "Créer un E-Profil et une Vidéo Highlights",
-        "Organiser un Google Drive personnalisé",
-        "Traduction des documents académiques",
-        "Préparation des Examens d'Anglais",
-        "Profil envoyé aux Entraîneurs Universitaires",
-        "Présentation avec les Entraîneurs Universitaires",
-        "Possibles visites de Campus",
-        "Engagement Universitaire"
-      ],
+      items: "Créer un E-Profil et une Vidéo Highlights|||Organiser un Google Drive personnalisé|||Traduction des documents académiques|||Préparation des Examens d'Anglais|||Profil envoyé aux Entraîneurs Universitaires|||Présentation avec les Entraîneurs Universitaires|||Possibles visites de Campus|||Engagement Universitaire",
     },
     step3: {
       phase: "Étape 3",
       title: "Logistique et Légal",
-      items: [
-        "Candidature Académique Universitaire",
-        "Inscription NCAA/NAIA",
-        "Soumission des relevés officiels",
-        "Acceptation Scolaire",
-        "Relevé Bancaire",
-        "Visa Étudiant F1",
-        "Processus SEVIS et VISA",
-        "Réserver des Vols vers les États-Unis"
-      ],
+      items: "Candidature Académique Universitaire|||Inscription NCAA/NAIA|||Soumission des relevés officiels|||Acceptation Scolaire|||Relevé Bancaire|||Visa Étudiant F1|||Processus SEVIS et VISA|||Réserver des Vols vers les États-Unis",
     },
   },
   scholarships: {

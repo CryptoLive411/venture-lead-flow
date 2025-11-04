@@ -1,50 +1,28 @@
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export const ProcessSection = () => {
+  const { t } = useLanguage();
+  
   const steps = [
     {
-      phase: "Step 1",
+      phase: t('process.step1.phase'),
       number: "01",
-      title: "Get in Contact",
-      items: [
-        "Talk with a VENTURE representative",
-        "Send your Highlight videos",
-        "Send your School Documents",
-        "Schedule a call with team & family",
-        "Profile Analysis & Assessment",
-        "Define goals and possibilities",
-        "Commitment to a new adVENTURE"
-      ],
+      title: t('process.step1.title'),
+      items: t('process.step1.items').split('|||'),
       color: "from-primary via-accent-blue to-primary"
     },
     {
-      phase: "Step 2",
+      phase: t('process.step2.phase'),
       number: "02",
-      title: "Start Recruitment",
-      items: [
-        "Create E-Profile & Highlight Video",
-        "Organize personalized Google Drive",
-        "Academic documents translation",
-        "English Exams Preparation",
-        "Profile sent to College Coaches",
-        "Introduction with College Coaches",
-        "Possible Campus visits",
-        "College Commitment"
-      ],
+      title: t('process.step2.title'),
+      items: t('process.step2.items').split('|||'),
       color: "from-accent-blue via-[hsl(200,100%,60%)] to-accent-blue"
     },
     {
-      phase: "Step 3",
+      phase: t('process.step3.phase'),
       number: "03",
-      title: "Logistics & Legal",
-      items: [
-        "University Academic Application",
-        "NCAA/NAIA registration",
-        "Official transcripts submission",
-        "School Acceptance",
-        "Bank Statement",
-        "F1 Student Visa",
-        "SEVIS & VISA Process",
-        "Book Flights to USA"
-      ],
+      title: t('process.step3.title'),
+      items: t('process.step3.items').split('|||'),
       color: "from-[hsl(220,70%,40%)] via-primary to-[hsl(220,70%,40%)]"
     }
   ];
@@ -58,13 +36,13 @@ export const ProcessSection = () => {
       <div className="container relative mx-auto px-4">
         <div className="text-center mb-20">
           <div className="inline-block mb-4 px-6 py-2 bg-primary/10 rounded-full border border-primary/20">
-            <span className="text-sm font-semibold text-primary">Our Process</span>
+            <span className="text-sm font-semibold text-primary">{t('process.badge')}</span>
           </div>
           <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-            How Does It Work?
+            {t('process.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Our proven 3-step process to get you from first contact to college commitment
+            {t('process.subtitle')}
           </p>
         </div>
 

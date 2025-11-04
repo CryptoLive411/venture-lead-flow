@@ -39,27 +39,8 @@ export const es = {
     subtitle: "El sistema universitario estadounidense ofrece oportunidades incomparables para que los estudiantes-atletas sobresalgan tanto académica como deportivamente",
     difficulties: "Dificultades en Casa",
     advantages: "Ventajas en Estados Unidos",
-    difficultyList: [
-      "Sistema no favorable para estudiantes-atletas de alto nivel",
-      "Falta de programas que cubran necesidades académico-universitarias para atletas",
-      "Dificultad para combinar entrenamientos y competiciones con clases",
-      "Ausencia de tutores universitarios para apoyar a estudiantes-atletas",
-      "Becas y ayuda financiera insuficientes",
-      "Baja importancia del deporte universitario",
-      "Instalaciones académicas y deportivas alejadas entre sí",
-      "Debe elegir entre deporte de alto nivel o estudios universitarios"
-    ],
-    advantageList: [
-      "Apoyo del sistema universitario para combinar estudios y deporte de alto nivel",
-      "Ayudas financieras a través de becas deportivas, académicas e internacionales",
-      "Entrenamiento en un entorno donde los estudiantes-atletas son valorados y apoyados",
-      "Idioma: Alcanzar nivel bilingüe en inglés",
-      "Oportunidades profesionales: Impulsa tu carrera después de los estudios",
-      "Acceso a las instalaciones académicas y deportivas más completas y avanzadas",
-      "Prestigio académico de las universidades demostrado por rankings mundiales",
-      "Experiencia internacional que aumenta el crecimiento personal, académico y profesional",
-      "Integración cultural en uno de los países más influyentes del mundo"
-    ],
+    difficultyList: "Sistema no favorable para estudiantes-atletas de alto nivel|||Falta de programas que cubran necesidades académico-universitarias para atletas|||Dificultad para combinar entrenamientos y competiciones con clases|||Ausencia de tutores universitarios para apoyar a estudiantes-atletas|||Becas y ayuda financiera insuficientes|||Baja importancia del deporte universitario|||Instalaciones académicas y deportivas alejadas entre sí|||Debe elegir entre deporte de alto nivel o estudios universitarios",
+    advantageList: "Apoyo del sistema universitario para combinar estudios y deporte de alto nivel|||Ayudas financieras a través de becas deportivas, académicas e internacionales|||Entrenamiento en un entorno donde los estudiantes-atletas son valorados y apoyados|||Idioma: Alcanzar nivel bilingüe en inglés|||Oportunidades profesionales: Impulsa tu carrera después de los estudios|||Acceso a las instalaciones académicas y deportivas más completas y avanzadas|||Prestigio académico de las universidades demostrado por rankings mundiales|||Experiencia internacional que aumenta el crecimiento personal, académico y profesional|||Integración cultural en uno de los países más influyentes del mundo",
   },
   process: {
     badge: "Nuestro Proceso",
@@ -68,43 +49,17 @@ export const es = {
     step1: {
       phase: "Paso 1",
       title: "Ponte en Contacto",
-      items: [
-        "Habla con un representante de VENTURE",
-        "Envía tus videos de Highlights",
-        "Envía tus Documentos Escolares",
-        "Programa una llamada con el equipo y la familia",
-        "Análisis y Evaluación del Perfil",
-        "Define metas y posibilidades",
-        "Compromiso con una nueva adVENTURE"
-      ],
+      items: "Habla con un representante de VENTURE|||Envía tus videos de Highlights|||Envía tus Documentos Escolares|||Programa una llamada con el equipo y la familia|||Análisis y Evaluación del Perfil|||Define metas y posibilidades|||Compromiso con una nueva adVENTURE",
     },
     step2: {
       phase: "Paso 2",
       title: "Iniciar Reclutamiento",
-      items: [
-        "Crear E-Perfil y Video de Highlights",
-        "Organizar Google Drive personalizado",
-        "Traducción de documentos académicos",
-        "Preparación de Exámenes de Inglés",
-        "Perfil enviado a Entrenadores Universitarios",
-        "Presentación con Entrenadores Universitarios",
-        "Posibles visitas al Campus",
-        "Compromiso Universitario"
-      ],
+      items: "Crear E-Perfil y Video de Highlights|||Organizar Google Drive personalizado|||Traducción de documentos académicos|||Preparación de Exámenes de Inglés|||Perfil enviado a Entrenadores Universitarios|||Presentación con Entrenadores Universitarios|||Posibles visitas al Campus|||Compromiso Universitario",
     },
     step3: {
       phase: "Paso 3",
       title: "Logística y Legal",
-      items: [
-        "Aplicación Académica Universitaria",
-        "Registro NCAA/NAIA",
-        "Envío de transcripciones oficiales",
-        "Aceptación Escolar",
-        "Estado de Cuenta Bancaria",
-        "Visa de Estudiante F1",
-        "Proceso SEVIS y VISA",
-        "Reservar Vuelos a EE.UU."
-      ],
+      items: "Aplicación Académica Universitaria|||Registro NCAA/NAIA|||Envío de transcripciones oficiales|||Aceptación Escolar|||Estado de Cuenta Bancaria|||Visa de Estudiante F1|||Proceso SEVIS y VISA|||Reservar Vuelos a EE.UU.",
     },
   },
   scholarships: {
@@ -188,12 +143,7 @@ export const es = {
     subtitle: "Reserva una llamada de consulta gratuita con nuestro equipo para discutir tu viaje de fútbol universitario",
     whatToExpect: "Qué Esperar",
     inYourConsultation: "En tu consulta",
-    benefits: [
-      "Consulta gratuita de 15 minutos",
-      "Discutir tus objetivos de carrera futbolística",
-      "Aprender sobre oportunidades de becas",
-      "Obtener asesoramiento personalizado sobre tu camino"
-    ],
+    benefits: "Consulta gratuita de 15 minutos|||Discutir tus objetivos de carrera futbolística|||Aprender sobre oportunidades de becas|||Obtener asesoramiento personalizado sobre tu camino",
     available: "Disponible de Lunes a Viernes",
     hours: "9:00 AM - 6:00 PM EST",
     callDirectly: "Llámanos Directamente",

@@ -1,23 +1,27 @@
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export const ValuesSection = () => {
+  const { t } = useLanguage();
+  
   const values = [
     {
-      title: "Integrity",
-      description: "Our team is made up of former student-athletes who have gone through the experience of competing and studying abroad thanks to scholarships.",
+      titleKey: "values.integrity.title",
+      descriptionKey: "values.integrity.description",
       icon: "🎯"
     },
     {
-      title: "Empathy",
-      description: "We understand the journey because we've lived it. Every player receives personalized attention and support.",
+      titleKey: "values.empathy.title",
+      descriptionKey: "values.empathy.description",
       icon: "❤️"
     },
     {
-      title: "Work-Ethic",
-      description: "Direct contact with more than 400 universities. We work tirelessly to find the perfect fit for each athlete.",
+      titleKey: "values.workEthic.title",
+      descriptionKey: "values.workEthic.description",
       icon: "💪"
     },
     {
-      title: "Results",
-      description: "Focus on quality of service and accountability. Every player is an individual process with measurable outcomes.",
+      titleKey: "values.results.title",
+      descriptionKey: "values.results.description",
       icon: "⭐"
     }
   ];
@@ -30,20 +34,20 @@ export const ValuesSection = () => {
       <div className="container relative mx-auto px-4">
         <div className="text-center mb-20 animate-fade-in">
           <div className="inline-block mb-4 px-6 py-2 bg-primary/10 rounded-full border border-primary/20">
-            <span className="text-sm font-semibold text-primary">Why Choose Venture</span>
+            <span className="text-sm font-semibold text-primary">{t('values.badge')}</span>
           </div>
           <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-            Our Core Values
+            {t('values.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Built on the foundation of integrity, empathy, work-ethic, and proven results
+            {t('values.subtitle')}
           </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
           {values.map((value, index) => (
             <div 
-              key={value.title}
+              key={value.titleKey}
               className="group relative p-8 bg-gradient-to-br from-card to-card/50 rounded-3xl border border-border hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -53,10 +57,10 @@ export const ValuesSection = () => {
               <div className="relative">
                 <div className="text-6xl mb-6 transform group-hover:scale-110 transition-transform duration-500">{value.icon}</div>
                 <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors duration-300">
-                  {value.title}
+                  {t(value.titleKey)}
                 </h3>
                 <p className="text-muted-foreground leading-relaxed text-sm">
-                  {value.description}
+                  {t(value.descriptionKey)}
                 </p>
               </div>
             </div>

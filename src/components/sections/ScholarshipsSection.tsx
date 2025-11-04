@@ -1,51 +1,34 @@
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export const ScholarshipsSection = () => {
+  const { t } = useLanguage();
+  
   const scholarshipTypes = [
     {
-      title: "Athletic Scholarship",
+      titleKey: "scholarships.athletic.title",
       icon: "⚽",
-      factors: [
-        "Athletic level",
-        "Video Highlights Evaluation",
-        "Association & division (NCAA, NAIA, NJCAA)",
-        "Male or female athlete (Title IX)",
-        "Direct budget from Soccer Program",
-        "Coaches' positional needs"
-      ]
+      factorsKey: "scholarships.athletic.factors",
     },
     {
-      title: "Academic Scholarship",
+      titleKey: "scholarships.academic.title",
       icon: "🎓",
-      factors: [
-        "Academic level & GPA",
-        "SAT & Duolingo Exam scores",
-        "GPA Official Evaluation",
-        "University Academic Award",
-        "Degree Evaluation (Grad)",
-        "Credits Evaluated (Transfer)"
-      ]
+      factorsKey: "scholarships.academic.factors",
     },
     {
-      title: "International Student",
+      titleKey: "scholarships.international.title",
       icon: "🌎",
-      factors: [
-        "Citizenship",
-        "Country relationship with USA",
-        "Few schools offer this",
-        "Number of students per country",
-        "Academic Acceptance",
-        "University funding availability"
-      ]
+      factorsKey: "scholarships.international.factors",
     }
   ];
 
   const divisions = [
-    { name: "NCAA D1", type: "Sports & Academic Scholarships" },
-    { name: "NCAA D2", type: "Sports & Academic Scholarships" },
-    { name: "NCAA D3", type: "Academic Scholarships" },
-    { name: "NAIA", type: "Sports & Academic Scholarships" },
-    { name: "NJCAA D1", type: "Sports & Academic Scholarships" },
-    { name: "NJCAA D2", type: "Sports & Academic Scholarships" },
-    { name: "NJCAA D3", type: "Academic Scholarships" }
+    { name: "NCAA D1", typeKey: "scholarships.divisions.types.sportsAndAcademic" },
+    { name: "NCAA D2", typeKey: "scholarships.divisions.types.sportsAndAcademic" },
+    { name: "NCAA D3", typeKey: "scholarships.divisions.types.academicOnly" },
+    { name: "NAIA", typeKey: "scholarships.divisions.types.sportsAndAcademic" },
+    { name: "NJCAA D1", typeKey: "scholarships.divisions.types.sportsAndAcademic" },
+    { name: "NJCAA D2", typeKey: "scholarships.divisions.types.sportsAndAcademic" },
+    { name: "NJCAA D3", typeKey: "scholarships.divisions.types.academicOnly" }
   ];
 
   return (
@@ -53,28 +36,28 @@ export const ScholarshipsSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-            Scholarships & Funding
+            {t('scholarships.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Multiple scholarship opportunities to make your college dream affordable
+            {t('scholarships.subtitle')}
           </p>
         </div>
 
         {/* Scholarship Types */}
         <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-7xl mx-auto">
-          {scholarshipTypes.map((scholarship, index) => (
+          {scholarshipTypes.map((scholarship) => (
             <div 
-              key={scholarship.title}
+              key={scholarship.titleKey}
               className="bg-card rounded-2xl border-2 border-border p-8 hover:border-primary transition-all hover:shadow-xl"
             >
               <div className="text-5xl mb-4">{scholarship.icon}</div>
               <h3 className="text-2xl font-bold text-foreground mb-4">
-                {scholarship.title}
+                {t(scholarship.titleKey)}
               </h3>
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-primary mb-3">Depends on:</p>
+                <p className="text-sm font-semibold text-primary mb-3">{t('scholarships.athletic.dependsOn')}</p>
                 <ul className="space-y-2">
-                  {scholarship.factors.map((factor, i) => (
+                  {t(scholarship.factorsKey).split('|||').map((factor: string, i: number) => (
                     <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <span className="text-primary">•</span>
                       {factor}
@@ -88,18 +71,18 @@ export const ScholarshipsSection = () => {
 
         {/* Scholarship Coverage */}
         <div className="bg-primary/5 rounded-2xl p-8 border-2 border-primary/20 mb-16 max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-foreground mb-6 text-center">Scholarship Coverage</h3>
+          <h3 className="text-2xl font-bold text-foreground mb-6 text-center">{t('scholarships.coverage.title')}</h3>
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-card rounded-xl p-6">
-              <h4 className="text-lg font-bold text-primary mb-3">Partial Scholarship</h4>
+              <h4 className="text-lg font-bold text-primary mb-3">{t('scholarships.coverage.partial.title')}</h4>
               <p className="text-sm text-muted-foreground">
-                Covers part of tuition and a percentage of other expenses (books, room & board, medical insurance)
+                {t('scholarships.coverage.partial.description')}
               </p>
             </div>
             <div className="bg-card rounded-xl p-6">
-              <h4 className="text-lg font-bold text-primary mb-3">Full Scholarship</h4>
+              <h4 className="text-lg font-bold text-primary mb-3">{t('scholarships.coverage.full.title')}</h4>
               <p className="text-sm text-muted-foreground">
-                Covers total costs - tuition, books, room & board, medical insurance
+                {t('scholarships.coverage.full.description')}
               </p>
             </div>
           </div>
@@ -107,7 +90,7 @@ export const ScholarshipsSection = () => {
 
         {/* Divisions */}
         <div className="max-w-6xl mx-auto">
-          <h3 className="text-3xl font-bold text-foreground mb-12 text-center">College System Divisions</h3>
+          <h3 className="text-3xl font-bold text-foreground mb-12 text-center">{t('scholarships.divisions.title')}</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {divisions.map((division, index) => (
               <div 
@@ -124,7 +107,7 @@ export const ScholarshipsSection = () => {
                     <span className="font-bold text-primary text-lg">{division.name}</span>
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
-                    {division.type}
+                    {t(division.typeKey)}
                   </p>
                 </div>
               </div>

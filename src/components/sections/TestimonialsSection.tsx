@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Quote } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   Carousel,
   CarouselContent,
@@ -9,6 +10,8 @@ import {
 } from "@/components/ui/carousel";
 
 export const TestimonialsSection = () => {
+  const { t } = useLanguage();
+  
   const testimonials = [
     {
       name: "Henrique Santos",
@@ -80,13 +83,13 @@ export const TestimonialsSection = () => {
       <div className="container relative mx-auto px-4">
         <div className="text-center mb-20">
           <div className="inline-block mb-4 px-6 py-2 bg-primary/10 rounded-full border border-primary/20">
-            <span className="text-sm font-semibold text-primary">Success Stories</span>
+            <span className="text-sm font-semibold text-primary">{t('testimonials.badge')}</span>
           </div>
           <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
-            What Athletes Say
+            {t('testimonials.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            Hear from student-athletes who have successfully made the journey to college soccer in the USA
+            {t('testimonials.subtitle')}
           </p>
         </div>
 
@@ -139,8 +142,8 @@ export const TestimonialsSection = () => {
               ))}
             </div>
             <div className="text-left">
-              <p className="font-bold text-foreground text-lg">350+ Athletes Placed</p>
-              <p className="text-sm text-muted-foreground">Trusted by families worldwide</p>
+              <p className="font-bold text-foreground text-lg">{t('testimonials.trustBadge')}</p>
+              <p className="text-sm text-muted-foreground">{t('testimonials.trustSubtext')}</p>
             </div>
           </div>
         </div>

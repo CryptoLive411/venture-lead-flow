@@ -1,7 +1,10 @@
+import { useLanguage } from "@/contexts/LanguageContext";
 import teamImage from "@/assets/team-year-1.png";
 import topImage from "@/assets/top-25.png";
 
 export const PlayersSection = () => {
+  const { t } = useLanguage();
+  
   const players = [
     { name: "Henrique Santos", school: "NC State U" },
     { name: "Fernando Silva", school: "UTRGV" },
@@ -19,9 +22,9 @@ export const PlayersSection = () => {
   ];
 
   const stats = [
-    { value: "1.3%", label: "High school to NCAA D1" },
-    { value: "5.6%", label: "High school to NCAA" },
-    { value: "23,400", label: "NCAA Soccer Athletes" }
+    { value: "1.3%", labelKey: "players.stats.stat1" },
+    { value: "5.6%", labelKey: "players.stats.stat2" },
+    { value: "23,400", labelKey: "players.stats.stat3" }
   ];
 
   return (
@@ -29,10 +32,10 @@ export const PlayersSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
-            Our Success Stories
+            {t('players.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Join hundreds of athletes who have achieved their college soccer dreams through Venture
+            {t('players.subtitle')}
           </p>
         </div>
 
@@ -57,16 +60,16 @@ export const PlayersSection = () => {
         {/* Stats */}
         <div className="grid md:grid-cols-3 gap-8 mb-16 max-w-4xl mx-auto">
           {stats.map((stat) => (
-            <div key={stat.label} className="text-center">
+            <div key={stat.labelKey} className="text-center">
               <div className="text-4xl md:text-5xl font-bold text-primary mb-2">{stat.value}</div>
-              <div className="text-muted-foreground">{stat.label}</div>
+              <div className="text-muted-foreground">{t(stat.labelKey)}</div>
             </div>
           ))}
         </div>
 
         {/* Players List */}
         <div className="max-w-6xl mx-auto">
-          <h3 className="text-3xl font-bold text-foreground mb-8 text-center">Some Athletes We've Placed</h3>
+          <h3 className="text-3xl font-bold text-foreground mb-8 text-center">{t('players.athletesPlaced')}</h3>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {players.map((player, index) => (
               <div 
@@ -85,10 +88,10 @@ export const PlayersSection = () => {
           <div className="text-center">
             <div className="text-5xl mb-4">🏆</div>
             <p className="text-lg text-foreground italic mb-2">
-              "The American sports system uses the college route as a pathway to the professional level."
+              {t('players.quote')}
             </p>
             <p className="text-sm text-muted-foreground">
-              Each year, up to 90 men's players and 36 women's players are drafted by MLS and NWSL clubs every January.
+              {t('players.quoteSubtext')}
             </p>
           </div>
         </div>

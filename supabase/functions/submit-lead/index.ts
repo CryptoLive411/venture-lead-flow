@@ -32,11 +32,79 @@ const leadSchema = z.object({
   repId: z.string().uuid(),
 });
 
-// Helper function to get timezone offset in milliseconds
-function getTimezoneOffset(timezone: string, date: Date): number {
-  const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
-  const tzDate = new Date(date.toLocaleString('en-US', { timeZone: timezone }));
-  return tzDate.getTime() - utcDate.getTime();
+// Helper function to convert time between timezones
+function convertTime(dateStr: string, timeStr: string, fromTz: string, toTz: string): string {
+  try {
+    // Parse the time
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    
+    // Create a date object for the given date in the source timezone
+    // We'll use a formatter to get the UTC offset
+    const testDate = new Date(`${dateStr}T12:00:00Z`);
+    
+    // Get the offset for the source timezone on this date
+    const sourceFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: fromTz,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+      timeZoneName: 'shortOffset'
+    });
+    
+    // Format a known UTC time to extract the offset
+    const utcDate = new Date(`${dateStr}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00Z`);
+    const sourceStr = sourceFormatter.format(utcDate);
+    
+    // Now we need to work backwards - we have the local time and need to find UTC
+    // The trick: create multiple test dates and see which one produces our desired local time
+    let bestMatch = utcDate;
+    let bestDiff = Infinity;
+    
+    // Try offsets from -12 to +14 hours
+    for (let offsetHours = -12; offsetHours <= 14; offsetHours++) {
+      const testUTC = new Date(Date.UTC(
+        parseInt(dateStr.split('-')[0]),
+        parseInt(dateStr.split('-')[1]) - 1,
+        parseInt(dateStr.split('-')[2]),
+        hours - offsetHours,
+        minutes,
+        0
+      ));
+      
+      const testLocalParts = sourceFormatter.formatToParts(testUTC);
+      const testHour = parseInt(testLocalParts.find(p => p.type === 'hour')?.value || '0');
+      const testMinute = parseInt(testLocalParts.find(p => p.type === 'minute')?.value || '0');
+      
+      const diff = Math.abs((testHour * 60 + testMinute) - (hours * 60 + minutes));
+      if (diff < bestDiff) {
+        bestDiff = diff;
+        bestMatch = testUTC;
+      }
+      
+      if (diff === 0) break; // Perfect match found
+    }
+    
+    // Now format this UTC time in the target timezone
+    const targetFormatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: toTz,
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    
+    const targetParts = targetFormatter.formatToParts(bestMatch);
+    const targetHour = targetParts.find(p => p.type === 'hour')?.value || '00';
+    const targetMinute = targetParts.find(p => p.type === 'minute')?.value || '00';
+    
+    return `${targetHour}:${targetMinute}`;
+  } catch (error) {
+    console.error('Error converting time:', error);
+    return timeStr; // Return original time on error
+  }
 }
 
 interface LeadData {
@@ -210,32 +278,23 @@ ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""
     
     if (leadData.callTime && leadData.timezone && settings.timezone) {
       try {
-        // Parse the date and time in the user's timezone
         const userTimezone = leadData.timezone;
         const repTimezone = settings.timezone;
         
-        // Create a date string in the user's timezone
-        const dateTimeString = `${leadData.callAvailability}T${leadData.callTime}:00`;
-        
-        // Convert to timestamp assuming user's timezone
-        const userDate = new Date(dateTimeString);
-        
-        // Get the timezone offset difference
-        const userOffset = getTimezoneOffset(userTimezone, userDate);
-        const repOffset = getTimezoneOffset(repTimezone, userDate);
-        const offsetDiff = repOffset - userOffset;
-        
-        // Adjust the time
-        const repDate = new Date(userDate.getTime() + offsetDiff);
-        const hours = String(repDate.getHours()).padStart(2, '0');
-        const minutes = String(repDate.getMinutes()).padStart(2, '0');
-        convertedTime = `${hours}:${minutes}`;
+        // Convert the time
+        convertedTime = convertTime(
+          leadData.callAvailability,
+          leadData.callTime,
+          userTimezone,
+          repTimezone
+        );
         
         timezoneNote = ` (converted from ${leadData.callTime} ${userTimezone} to ${convertedTime} ${repTimezone})`;
         console.log(`Time conversion: ${leadData.callTime} ${userTimezone} → ${convertedTime} ${repTimezone}`);
       } catch (error) {
         console.error("Error converting timezone:", error);
-        timezoneNote = ` (${leadData.callTime} in ${leadData.timezone})`;
+        convertedTime = leadData.callTime;
+        timezoneNote = ` (${leadData.callTime} in ${leadData.timezone} - conversion failed)`;
       }
     } else {
       timezoneNote = leadData.timezone ? ` (${leadData.timezone} timezone)` : " (user's local time)";

@@ -4,6 +4,8 @@ import ventureLogoImage from "@/assets/venture-logo-new.png";
 import { Phone, Mail, Settings } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface HeaderProps {
   repId?: string;
@@ -11,6 +13,7 @@ interface HeaderProps {
 
 export const Header = ({ repId }: HeaderProps) => {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userSettings, setUserSettings] = useState<{
     phone_number: string | null;
@@ -93,8 +96,9 @@ export const Header = ({ repId }: HeaderProps) => {
             </div>
           </div>
 
-          {/* Contact Info */}
+          {/* Language Selector & Contact Info */}
           <div className="flex items-center gap-4">
+            <LanguageSelector />
             {userSettings?.phone_number && (
               <a 
                 href={`tel:${userSettings.phone_number}`}
@@ -123,7 +127,7 @@ export const Header = ({ repId }: HeaderProps) => {
                   className="flex items-center gap-2"
                 >
                   <Settings className="w-4 h-4" />
-                  <span className="hidden lg:inline">Settings</span>
+                  <span className="hidden lg:inline">{t('header.settings')}</span>
                 </Button>
               ) : (
                 <Button
@@ -132,7 +136,7 @@ export const Header = ({ repId }: HeaderProps) => {
                   onClick={() => navigate("/auth")}
                   className="flex items-center gap-2"
                 >
-                  <span>Sales Login</span>
+                  <span>{t('header.salesLogin')}</span>
                 </Button>
               )
             )}

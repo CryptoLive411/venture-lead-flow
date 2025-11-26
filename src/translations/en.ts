@@ -183,6 +183,7 @@ export const en = {
     hasHighlightTape: "Do you have a highlight tape made?",
     highlightsLink: "Attach Highlights Link",
     highlightsLinkDescription: "Link to your highlight video (YouTube, Vimeo, etc.)",
+    playerImage: "Upload Player Image",
     callAvailability: "When are you free for a call?",
     callTime: "Preferred Call Time (Optional)",
     callTimeDescription: "Select your preferred time for the call",

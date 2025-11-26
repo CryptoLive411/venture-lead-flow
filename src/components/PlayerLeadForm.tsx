@@ -78,6 +78,7 @@ const formSchema = z.object({
     .min(1, { message: "Please select when you're available" }),
   callTime: z.string().optional(),
   timezone: z.string().optional(),
+  playerImage: z.instanceof(File).optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -124,10 +125,30 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
         throw new Error("Invalid link. Please use the link provided by your sales representative.");
       }
 
+      let imageUrl = "";
+      
+      if (values.playerImage) {
+        const fileName = `${Date.now()}-${values.playerImage.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from('player-images')
+          .upload(fileName, values.playerImage);
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('player-images')
+          .getPublicUrl(fileName);
+        
+        imageUrl = publicUrl;
+      }
+
       const { data, error } = await supabase.functions.invoke("submit-lead", {
         body: {
           ...values,
           repId,
+          playerImage: imageUrl,
         },
       });
 
@@ -266,6 +287,28 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
                 <FormLabel>{t('form.gpa')} *</FormLabel>
                 <FormControl>
                   <Input placeholder="3.5" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="playerImage"
+            render={({ field: { value, onChange, ...field } }) => (
+              <FormItem>
+                <FormLabel>{t('form.playerImage')}</FormLabel>
+                <FormControl>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      if (file) onChange(file);
+                    }}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

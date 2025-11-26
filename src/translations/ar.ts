@@ -188,6 +188,7 @@ export const ar = {
     hasHighlightTape: "هل لديك فيديو للأهداف والمهارات؟",
     highlightsLink: "إرفاق رابط الأهداف",
     highlightsLinkDescription: "رابط لفيديو الأهداف الخاص بك (يوتيوب، فيميو، إلخ)",
+    playerImage: "تحميل صورة اللاعب",
     callAvailability: "متى تكون متاحًا للمكالمة؟",
     callTime: "الوقت المفضل للمكالمة (اختياري)",
     callTimeDescription: "اختر الوقت المفضل للمكالمة",

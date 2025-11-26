@@ -188,6 +188,7 @@ export const fr = {
     hasHighlightTape: "Avez-vous une vidéo de moments forts?",
     highlightsLink: "Joindre le Lien des Moments Forts",
     highlightsLinkDescription: "Lien vers votre vidéo de moments forts (YouTube, Vimeo, etc.)",
+    playerImage: "Télécharger l'Image du Joueur",
     callAvailability: "Quand êtes-vous disponible pour un appel?",
     callTime: "Heure Préférée pour l'Appel (Optionnel)",
     callTimeDescription: "Sélectionnez votre heure préférée pour l'appel",

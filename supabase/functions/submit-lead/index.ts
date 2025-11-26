@@ -29,6 +29,7 @@ const leadSchema = z.object({
   callAvailability: z.string().trim().max(100),
   callTime: z.string().trim().max(20).optional(),
   timezone: z.string().trim().max(100).optional(),
+  playerImage: z.string().trim().max(500).optional(),
   repId: z.string().uuid(),
 });
 
@@ -126,6 +127,7 @@ interface LeadData {
   callAvailability: string;
   callTime?: string;
   timezone?: string;
+  playerImage?: string;
   repId: string;
 }
 
@@ -219,6 +221,7 @@ serve(async (req: Request) => {
 - Needs Visa Assistance: ${leadData.visaAssistance}
 - Has Highlight Tape: ${leadData.hasHighlightTape}
 ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""}
+${leadData.playerImage ? `- Player Image: ${leadData.playerImage}` : ""}
 - Available for Call: ${leadData.callAvailability}
     `.trim();
 

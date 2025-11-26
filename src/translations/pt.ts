@@ -188,6 +188,7 @@ export const pt = {
     hasHighlightTape: "Você tem um vídeo de destaques feito?",
     highlightsLink: "Anexar Link de Destaques",
     highlightsLinkDescription: "Link para seu vídeo de destaques (YouTube, Vimeo, etc.)",
+    playerImage: "Carregar Imagem do Jogador",
     callAvailability: "Quando você está disponível para uma ligação?",
     callTime: "Horário Preferido para Ligação (Opcional)",
     callTimeDescription: "Selecione seu horário preferido para a ligação",

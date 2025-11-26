@@ -183,6 +183,7 @@ export const es = {
     hasHighlightTape: "¿Tienes un video de destacados hecho?",
     highlightsLink: "Adjuntar Enlace de Destacados",
     highlightsLinkDescription: "Enlace a tu video de destacados (YouTube, Vimeo, etc.)",
+    playerImage: "Subir Imagen del Jugador",
     callAvailability: "¿Cuándo estás disponible para una llamada?",
     callTime: "Hora Preferida para Llamada (Opcional)",
     callTimeDescription: "Selecciona tu hora preferida para la llamada",

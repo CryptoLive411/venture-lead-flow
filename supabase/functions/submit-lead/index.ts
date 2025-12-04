@@ -235,7 +235,7 @@ ${leadData.playerImage ? `- Player Image: ${leadData.playerImage}` : ""}
         body: JSON.stringify({
           title: dealTitle,
           person_id: personId,
-          value: leadData.estimatedBudget.replace(/[^0-9]/g, "") || "0", // Extract numeric value
+          value: 4495,
           currency: "USD",
           visible_to: "3", // Visible to entire company
         }),

@@ -26,56 +26,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const formSchema = z.object({
-  fullName: z
-    .string()
-    .trim()
-    .min(2, { message: "Name must be at least 2 characters" })
-    .max(100, { message: "Name must be less than 100 characters" }),
-  email: z
-    .string()
-    .trim()
-    .email({ message: "Invalid email address" })
-    .max(255, { message: "Email must be less than 255 characters" }),
-  phoneNumber: z
-    .string()
-    .trim()
-    .min(10, { message: "Phone number must be at least 10 digits" })
-    .max(20, { message: "Phone must be less than 20 characters" }),
-  currentClub: z
-    .string()
-    .trim()
-    .min(1, { message: "Current club is required" }),
-  age: z
-    .string()
-    .min(1, { message: "Age is required" }),
-  position: z
-    .string()
-    .min(1, { message: "Position is required" }),
-  nationality: z
-    .string()
-    .trim()
-    .min(1, { message: "Nationality is required" }),
-  highschoolGPA: z
-    .string()
-    .min(1, { message: "Highschool GPA is required" }),
-  highschoolGradYear: z
-    .string()
-    .min(4, { message: "Graduation year is required" }),
-  visaAssistance: z.enum(["yes", "no"]),
-  estimatedBudget: z
-    .string()
-    .min(1, { message: "Budget estimate is required" }),
-  preferredLeague: z
-    .array(z.string())
-    .min(1, { message: "Select at least one league" }),
-  preferredDivision: z
-    .array(z.string())
-    .min(1, { message: "Select at least one division" }),
-  hasHighlightTape: z.enum(["yes", "no", "almost"]),
+  fullName: z.string().trim().max(100).default(""),
+  email: z.string().trim().max(255).default(""),
+  phoneNumber: z.string().trim().max(50).default(""),
+  currentClub: z.string().trim().max(100).default(""),
+  age: z.string().max(20).default(""),
+  position: z.string().max(100).default(""),
+  nationality: z.string().trim().max(100).default(""),
+  highschoolGPA: z.string().max(50).default(""),
+  highschoolGradYear: z.string().max(20).default(""),
+  visaAssistance: z.enum(["yes", "no"]).default("no"),
+  estimatedBudget: z.string().max(100).default(""),
+  preferredLeague: z.array(z.string()).default([]),
+  preferredDivision: z.array(z.string()).default([]),
+  hasHighlightTape: z.enum(["yes", "no", "almost"]).default("no"),
   highlightsLink: z.string().optional(),
-  callAvailability: z
-    .string()
-    .min(1, { message: "Please select when you're available" }),
+  callAvailability: z.string().max(50).default(""),
   callTime: z.string().optional(),
   timezone: z.string().optional(),
   playerImage: z.instanceof(File).optional(),

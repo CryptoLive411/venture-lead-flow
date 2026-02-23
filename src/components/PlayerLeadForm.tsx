@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -29,6 +31,7 @@ const formSchema = z.object({
   fullName: z.string().trim().max(100).default(""),
   email: z.string().trim().max(255).default(""),
   phoneNumber: z.string().trim().max(50).default(""),
+  whatsappNumber: z.string().trim().max(50).default(""),
   currentClub: z.string().trim().max(100).default(""),
   age: z.string().max(20).default(""),
   position: z.string().max(100).default(""),
@@ -36,11 +39,14 @@ const formSchema = z.object({
   highschoolGPA: z.string().max(50).default(""),
   highschoolGradYear: z.string().max(20).default(""),
   visaAssistance: z.enum(["yes", "no"]).default("no"),
+  budgetReady: z.enum(["yes", "payment_plan", "no"]).default("yes"),
   estimatedBudget: z.string().max(100).default(""),
   preferredLeague: z.array(z.string()).default([]),
   preferredDivision: z.array(z.string()).default([]),
   hasHighlightTape: z.enum(["yes", "no", "almost"]).default("no"),
   highlightsLink: z.string().optional(),
+  timeline: z.enum(["asap", "3_6_months", "exploring"]).default("asap"),
+  seriousness: z.enum(["very_serious", "somewhat", "curious"]).default("very_serious"),
   callAvailability: z.string().max(50).default(""),
   callTime: z.string().optional(),
   timezone: z.string().optional(),
@@ -64,6 +70,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       fullName: "",
       email: "",
       phoneNumber: "",
+      whatsappNumber: "",
       currentClub: "",
       age: "",
       position: "",
@@ -71,11 +78,14 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       highschoolGPA: "",
       highschoolGradYear: "",
       visaAssistance: "no",
+      budgetReady: "yes",
       estimatedBudget: "",
       preferredLeague: [],
       preferredDivision: [],
       hasHighlightTape: "no",
       highlightsLink: "",
+      timeline: "asap",
+      seriousness: "very_serious",
       callAvailability: "",
       callTime: "",
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -84,7 +94,6 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
 
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
-    console.log("Submitting lead form");
 
     try {
       if (!repId) {
@@ -119,11 +128,8 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       });
 
       if (error) {
-        console.error("Error submitting lead:", error.message);
         throw error;
       }
-
-      console.log("Lead submitted successfully");
 
       toast({
         title: t('form.successTitle'),
@@ -146,6 +152,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Personal Info */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -184,6 +191,21 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
                 <FormControl>
                   <Input type="tel" placeholder={t('form.phonePlaceholder')} {...field} />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="whatsappNumber"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('form.whatsapp')} *</FormLabel>
+                <FormControl>
+                  <Input type="tel" placeholder={t('form.whatsappPlaceholder')} {...field} />
+                </FormControl>
+                <FormDescription>{t('form.whatsappDescription')}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -261,6 +283,20 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
 
           <FormField
             control={form.control}
+            name="highschoolGradYear"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('form.gradYear')} *</FormLabel>
+                <FormControl>
+                  <Input placeholder="2025" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
             name="playerImage"
             render={({ field: { value, onChange, ...field } }) => (
               <FormItem>
@@ -275,20 +311,6 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
                     }}
                     {...field}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="highschoolGradYear"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('form.gradYear')} *</FormLabel>
-                <FormControl>
-                  <Input placeholder="2025" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -318,20 +340,155 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           />
         </div>
 
+        {/* Highlight Video - Required */}
         <FormField
           control={form.control}
-          name="estimatedBudget"
+          name="hasHighlightTape"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{t('form.budget')} *</FormLabel>
-              <FormControl>
-                <Input placeholder={t('form.budgetPlaceholder')} {...field} />
-              </FormControl>
+              <FormLabel>{t('form.hasHighlightTape')} *</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('form.selectOption')} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="yes">{t('form.yes')}</SelectItem>
+                  <SelectItem value="no">{t('form.no')}</SelectItem>
+                  <SelectItem value="almost">{t('form.almost')}</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
         />
 
+        {(form.watch("hasHighlightTape") === "yes" || form.watch("hasHighlightTape") === "almost") && (
+          <FormField
+            control={form.control}
+            name="highlightsLink"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('form.highlightsLink')} *</FormLabel>
+                <FormControl>
+                  <Input 
+                    type="url" 
+                    placeholder="https://youtube.com/..." 
+                    {...field} 
+                  />
+                </FormControl>
+                <FormDescription>
+                  {t('form.highlightsLinkDescription')}
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
+        {/* Qualifying Questions */}
+        <div className="space-y-6 pt-4 border-t border-border">
+          <h3 className="text-lg font-bold text-foreground">{t('form.qualifyingTitle')}</h3>
+
+          {/* Budget */}
+          <FormField
+            control={form.control}
+            name="budgetReady"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>{t('form.budgetReady')} *</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="yes" id="budget-yes" />
+                      <Label htmlFor="budget-yes">{t('form.budgetYes')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="payment_plan" id="budget-plan" />
+                      <Label htmlFor="budget-plan">{t('form.budgetPlan')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="no" id="budget-no" />
+                      <Label htmlFor="budget-no">{t('form.budgetNo')}</Label>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Timeline */}
+          <FormField
+            control={form.control}
+            name="timeline"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>{t('form.timeline')} *</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="asap" id="timeline-asap" />
+                      <Label htmlFor="timeline-asap">{t('form.timelineASAP')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="3_6_months" id="timeline-36" />
+                      <Label htmlFor="timeline-36">{t('form.timeline36')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="exploring" id="timeline-exploring" />
+                      <Label htmlFor="timeline-exploring">{t('form.timelineExploring')}</Label>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Seriousness */}
+          <FormField
+            control={form.control}
+            name="seriousness"
+            render={({ field }) => (
+              <FormItem className="space-y-3">
+                <FormLabel>{t('form.seriousness')} *</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    className="flex flex-col space-y-2"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="very_serious" id="serious-very" />
+                      <Label htmlFor="serious-very">{t('form.seriousVery')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="somewhat" id="serious-somewhat" />
+                      <Label htmlFor="serious-somewhat">{t('form.seriousSomewhat')}</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="curious" id="serious-curious" />
+                      <Label htmlFor="serious-curious">{t('form.seriousCurious')}</Label>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* Leagues & Divisions */}
         <FormField
           control={form.control}
           name="preferredLeague"
@@ -402,52 +559,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="hasHighlightTape"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{t('form.hasHighlightTape')} *</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={t('form.selectOption')} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="yes">{t('form.yes')}</SelectItem>
-                  <SelectItem value="no">{t('form.no')}</SelectItem>
-                  <SelectItem value="almost">{t('form.almost')}</SelectItem>
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {form.watch("hasHighlightTape") === "yes" && (
-          <FormField
-            control={form.control}
-            name="highlightsLink"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('form.highlightsLink')} *</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="url" 
-                    placeholder="https://youtube.com/..." 
-                    {...field} 
-                  />
-                </FormControl>
-                <FormDescription>
-                  {t('form.highlightsLinkDescription')}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
+        {/* Call scheduling */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -456,10 +568,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.callAvailability')} *</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="date" 
-                    {...field} 
-                  />
+                  <Input type="date" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -473,14 +582,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.callTime')}</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="time" 
-                    {...field} 
-                  />
+                  <Input type="time" {...field} />
                 </FormControl>
-                <FormDescription>
-                  {t('form.callTimeDescription')}
-                </FormDescription>
+                <FormDescription>{t('form.callTimeDescription')}</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -490,7 +594,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full h-12 text-base font-bold"
+          className="w-full h-14 text-lg font-bold bg-gradient-to-r from-primary to-accent-blue hover:from-primary/90 hover:to-accent-blue/90 text-white rounded-xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
         >
           {isSubmitting ? t('form.submitting') : t('form.submit')}
         </Button>

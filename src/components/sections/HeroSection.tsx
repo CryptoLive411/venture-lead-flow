@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import ventureLogoImage from "@/assets/venture-logo-new.png";
-import heroImage from "@/assets/hero-soccer-stadium.jpg";
+import heroImage from "@/assets/hero-college-campus.jpg";
 import { ArrowRight, Trophy, Users, Star } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 

@@ -2,23 +2,29 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import teamImage from "@/assets/team-year-1.png";
 import topImage from "@/assets/top-25.png";
 
+import youssefImg from "@/assets/players/youssef.png";
+import timImg from "@/assets/players/tim.png";
+import pedroBaischImg from "@/assets/players/pedro-baisch.png";
+import pedroCaeiroImg from "@/assets/players/pedro-caeiro.png";
+import rodrigoSilvaImg from "@/assets/players/rodrigo-silva.png";
+import ryadImg from "@/assets/players/ryad.png";
+import umbertoImg from "@/assets/players/umberto-pela.png";
+import raiPintoImg from "@/assets/players/rai-pinto.png";
+import miloImg from "@/assets/players/milo-peters.png";
+
 export const PlayersSection = () => {
   const { t } = useLanguage();
-  
-  const players = [
-    { name: "Henrique Santos", school: "NC State U" },
-    { name: "Fernando Silva", school: "UTRGV" },
-    { name: "Quenzi Heuerman", school: "Seton Hall & UNC Chapel Hill" },
-    { name: "Bernardo Monteiro", school: "Florida International U" },
-    { name: "Diego Castillo", school: "Utah Valley & FIU" },
-    { name: "Filip Jauk", school: "Florida Atlantic U & UNC Charlotte" },
-    { name: "Umberto Pela", school: "University of Virginia" },
-    { name: "Jose Conte", school: "UCLA" },
-    { name: "Santiago Ruiz", school: "Incarnate Word U" },
-    { name: "Joao Domingues", school: "Florida International U" },
-    { name: "Fabio Guerreiro", school: "UCF" },
-    { name: "Gabriel Pacheco", school: "Hofstra" },
-    { name: "Rui Reis", school: "Akron U" }
+
+  const playerImages = [
+    { src: youssefImg, alt: "Youssef Shafei - Central Connecticut" },
+    { src: timImg, alt: "Tim Noeding - Syracuse" },
+    { src: pedroBaischImg, alt: "Pedro Baisch - Merrimack" },
+    { src: pedroCaeiroImg, alt: "Pedro Caeiro - NC State" },
+    { src: rodrigoSilvaImg, alt: "Rodrigo Silva - Bowling Green" },
+    { src: ryadImg, alt: "Ryad - Southern Connecticut Owls" },
+    { src: umbertoImg, alt: "Umberto Pela - University of Virginia" },
+    { src: raiPintoImg, alt: "Rai Pinto - Marshall" },
+    { src: miloImg, alt: "Milo Peters - Dartmouth" },
   ];
 
   const stats = [
@@ -67,17 +73,21 @@ export const PlayersSection = () => {
           ))}
         </div>
 
-        {/* Players List */}
-        <div className="max-w-6xl mx-auto">
+        {/* Player Commitment Cards */}
+        <div className="max-w-7xl mx-auto">
           <h3 className="text-3xl font-bold text-foreground mb-8 text-center">{t('players.athletesPlaced')}</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {players.map((player, index) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {playerImages.map((player, index) => (
               <div 
                 key={index}
-                className="bg-gradient-to-br from-card to-secondary/20 rounded-xl p-4 border border-border hover:border-primary transition-all hover:shadow-lg"
+                className="rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-border"
               >
-                <div className="font-bold text-foreground">{player.name}</div>
-                <div className="text-sm text-muted-foreground mt-1">{player.school}</div>
+                <img 
+                  src={player.src} 
+                  alt={player.alt} 
+                  className="w-full h-auto object-cover"
+                  loading="lazy"
+                />
               </div>
             ))}
           </div>

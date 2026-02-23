@@ -131,16 +131,6 @@ export const TestimonialsSection = () => {
         {/* Trust Badge */}
         <div className="mt-20 text-center">
           <div className="inline-flex items-center gap-4 bg-gradient-to-r from-primary/10 via-accent-blue/10 to-primary/10 px-10 py-6 rounded-2xl border-2 border-primary/20 shadow-xl hover:shadow-2xl hover:shadow-primary/20 transition-all">
-            <div className="flex -space-x-3">
-              {[...Array(5)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className="w-12 h-12 rounded-full bg-gradient-to-br from-primary via-accent-blue to-primary border-4 border-background flex items-center justify-center text-white font-bold shadow-lg"
-                >
-                  {String.fromCharCode(65 + i)}
-                </div>
-              ))}
-            </div>
             <div className="text-left">
               <p className="font-bold text-foreground text-lg">{t('testimonials.trustBadge')}</p>
               <p className="text-sm text-muted-foreground">{t('testimonials.trustSubtext')}</p>

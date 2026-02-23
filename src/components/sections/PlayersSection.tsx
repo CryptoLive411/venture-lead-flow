@@ -1,6 +1,11 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import teamImage from "@/assets/team-year-1.png";
-import topImage from "@/assets/top-25.png";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 import youssefImg from "@/assets/players/youssef.png";
 import timImg from "@/assets/players/tim.png";
@@ -45,22 +50,31 @@ export const PlayersSection = () => {
           </p>
         </div>
 
-        {/* Images */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16 max-w-6xl mx-auto">
-          <div className="rounded-2xl overflow-hidden shadow-2xl">
-            <img 
-              src={teamImage} 
-              alt="Team of the Year" 
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="rounded-2xl overflow-hidden shadow-2xl">
-            <img 
-              src={topImage} 
-              alt="Top 25 Rankings" 
-              className="w-full h-full object-cover"
-            />
-          </div>
+        {/* Player Commitment Slider */}
+        <div className="max-w-6xl mx-auto mb-16">
+          <Carousel
+            opts={{ align: "start", loop: true }}
+            className="w-full"
+          >
+            <CarouselContent>
+              {playerImages.map((player, index) => (
+                <CarouselItem key={index} className="basis-1/2 sm:basis-1/3 lg:basis-1/4">
+                  <div className="p-2">
+                    <div className="rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                      <img 
+                        src={player.src} 
+                        alt={player.alt} 
+                        className="w-full h-auto object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
         </div>
 
         {/* Stats */}
@@ -73,28 +87,8 @@ export const PlayersSection = () => {
           ))}
         </div>
 
-        {/* Player Commitment Cards */}
-        <div className="max-w-7xl mx-auto">
-          <h3 className="text-3xl font-bold text-foreground mb-8 text-center">{t('players.athletesPlaced')}</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {playerImages.map((player, index) => (
-              <div 
-                key={index}
-                className="rounded-xl overflow-hidden shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 border border-border"
-              >
-                <img 
-                  src={player.src} 
-                  alt={player.alt} 
-                  className="w-full h-auto object-cover"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Professional Pathway Quote */}
-        <div className="mt-16 max-w-4xl mx-auto bg-primary/5 rounded-2xl p-8 border-2 border-primary/20">
+        <div className="max-w-4xl mx-auto bg-primary/5 rounded-2xl p-8 border-2 border-primary/20">
           <div className="text-center">
             <div className="text-5xl mb-4">🏆</div>
             <p className="text-lg text-foreground italic mb-2">

@@ -39,13 +39,6 @@ export const FormSection = ({ repId }: FormSectionProps) => {
       
       <div className="container relative mx-auto px-4">
         <div className="max-w-4xl mx-auto">
-          {/* Urgency banner */}
-          <div className="text-center mb-6">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-destructive/10 rounded-full border border-destructive/30">
-              <span className="text-sm font-bold text-destructive">{t('form.urgency')}</span>
-            </div>
-          </div>
-          
           <div className="text-center mb-12">
             <div className="inline-block mb-4 px-6 py-2 bg-primary/10 rounded-full border border-primary/20">
               <span className="text-sm font-semibold text-primary">{t('form.badge')}</span>

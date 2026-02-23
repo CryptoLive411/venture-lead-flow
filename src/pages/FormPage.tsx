@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { useParams, useSearchParams, Navigate } from "react-router-dom";
 import { HeroSection } from "@/components/sections/HeroSection";
 import { Header } from "@/components/sections/Header";
+import { ValuesSection } from "@/components/sections/ValuesSection";
 import { WhyUSASection } from "@/components/sections/WhyUSASection";
+import { ProcessSection } from "@/components/sections/ProcessSection";
+import { ScholarshipsSection } from "@/components/sections/ScholarshipsSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { PlayersSection } from "@/components/sections/PlayersSection";
 import { FormSection } from "@/components/sections/FormSection";
 import { CallSchedulerSection } from "@/components/sections/CallSchedulerSection";
-import { CTABanner } from "@/components/sections/CTABanner";
-import { WhoIsThisForSection } from "@/components/sections/WhoIsThisForSection";
 import { supabase } from "@/integrations/supabase/client";
 
 const FormPage = () => {
@@ -20,14 +21,18 @@ const FormPage = () => {
   useEffect(() => {
     const loadRepId = async () => {
       try {
+        // Check for ?rep= parameter first
         const repParam = searchParams.get("rep");
         if (repParam) {
+          console.log("✅ FormPage: Found repId from query param:", repParam);
           setRepId(repParam);
           setLoading(false);
           return;
         }
 
+        // If using slug format (just the username)
         if (slug) {
+          console.log("🔍 FormPage: Looking up user by slug:", slug);
           const { data, error } = await supabase
             .from("user_settings")
             .select("user_id, username, email, phone_number")
@@ -35,17 +40,20 @@ const FormPage = () => {
             .maybeSingle();
 
           if (error) {
-            console.error("Error finding user:", error);
+            console.error("❌ FormPage: Error finding user:", error);
             setLoading(false);
             return;
           }
 
           if (data) {
+            console.log("✅ FormPage: Found user data:", data);
             setRepId(data.user_id);
+          } else {
+            console.log("⚠️ FormPage: No user found for slug:", slug);
           }
         }
       } catch (error) {
-        console.error("Error loading rep ID:", error);
+        console.error("❌ FormPage: Error loading rep ID:", error);
       } finally {
         setLoading(false);
       }
@@ -70,13 +78,12 @@ const FormPage = () => {
     <div className="min-h-screen bg-background">
       <Header repId={repId} />
       <HeroSection />
-      <CTABanner />
+      <ValuesSection />
       <WhyUSASection />
-      <CTABanner />
-      <PlayersSection />
+      <ProcessSection />
+      <ScholarshipsSection />
       <TestimonialsSection />
-      <CTABanner />
-      <WhoIsThisForSection />
+      <PlayersSection />
       <CallSchedulerSection repId={repId} />
       <FormSection repId={repId} />
     </div>

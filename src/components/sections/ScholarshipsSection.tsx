@@ -70,8 +70,7 @@ export const ScholarshipsSection = () => {
                 <h3 className="text-2xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
                   {t(scholarship.titleKey)}
                 </h3>
-                <div className="space-y-2">
-                  <p className="text-sm font-semibold text-primary mb-3">{t('scholarships.athletic.dependsOn')}</p>
+              <div className="space-y-2">
                   <ul className="space-y-2">
                     {t(scholarship.factorsKey).split('|||').map((factor: string, i: number) => (
                       <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground group-hover:text-foreground/80 transition-colors">

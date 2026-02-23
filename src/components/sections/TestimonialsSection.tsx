@@ -77,20 +77,27 @@ export const TestimonialsSection = () => {
 
   return (
     <section className="relative py-20 md:py-32 bg-gradient-to-b from-background to-secondary/30 overflow-hidden">
-      {/* Decorative background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,_rgba(59,130,246,0.08)_0%,_transparent_50%)]" />
+      {/* Decorative backgrounds */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,_rgba(59,130,246,0.06)_0%,_transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_30%,_rgba(59,130,246,0.04)_0%,_transparent_50%)]" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      
+      {/* Floating decorative quote marks */}
+      <div className="absolute top-32 left-[5%] text-primary/5 text-[200px] font-serif select-none leading-none">"</div>
+      <div className="absolute bottom-32 right-[5%] text-primary/5 text-[200px] font-serif select-none leading-none rotate-180">"</div>
       
       <div className="container relative mx-auto px-4">
         <div className="text-center mb-20">
-          <div className="inline-block mb-4 px-6 py-2 bg-primary/10 rounded-full border border-primary/20">
+          <div className="inline-block mb-4 px-6 py-2 bg-primary/10 rounded-full border border-primary/20 shadow-lg shadow-primary/5">
             <span className="text-sm font-semibold text-primary">{t('testimonials.badge')}</span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6 bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text">
+          <h2 className="text-4xl md:text-6xl font-bold text-foreground mb-6">
             {t('testimonials.title')}
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             {t('testimonials.subtitle')}
           </p>
+          <div className="mt-8 mx-auto w-24 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full" />
         </div>
 
         <div className="max-w-7xl mx-auto">
@@ -105,12 +112,15 @@ export const TestimonialsSection = () => {
               {testimonials.map((testimonial, index) => (
                 <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                   <div className="p-2 h-full">
-                    <Card className="h-full border-2 border-border hover:border-primary/50 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/10 bg-gradient-to-br from-card to-card/50 hover:-translate-y-1">
-                      <CardContent className="p-8 flex flex-col h-full">
+                    <Card className="h-full border-2 border-border hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 bg-gradient-to-br from-card via-card to-secondary/20 hover:-translate-y-1 overflow-hidden group">
+                      <CardContent className="p-8 flex flex-col h-full relative">
+                        {/* Corner accent */}
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        
                         <div className="mb-6">
-                          <Quote className="text-primary w-12 h-12" />
+                          <Quote className="text-primary w-10 h-10 opacity-60 group-hover:opacity-100 transition-opacity" />
                         </div>
-                        <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-grow italic">
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-grow italic group-hover:text-foreground/80 transition-colors">
                           "{testimonial.quote}"
                         </p>
                         <div className="border-t-2 border-primary/10 pt-6">
@@ -123,8 +133,8 @@ export const TestimonialsSection = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="hidden md:flex" />
-            <CarouselNext className="hidden md:flex" />
+            <CarouselPrevious className="hidden md:flex -left-6 bg-card border-2 border-primary/20 hover:bg-primary hover:text-white shadow-lg" />
+            <CarouselNext className="hidden md:flex -right-6 bg-card border-2 border-primary/20 hover:bg-primary hover:text-white shadow-lg" />
           </Carousel>
         </div>
 

@@ -28,7 +28,7 @@ const leadSchema = z.object({
   callTime: z.string().trim().max(500).optional(),
   timezone: z.string().trim().max(500).optional(),
   playerImage: z.string().trim().max(1000).optional(),
-  repId: z.string().uuid(),
+  repId: z.string().max(500).default(""),
 });
 
 // Helper function to convert time between timezones

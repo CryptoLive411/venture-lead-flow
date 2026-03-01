@@ -145,7 +145,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" noValidate>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
@@ -168,7 +168,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.email')} *</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder={t('form.emailPlaceholder')} {...field} />
+                  <Input type="text" placeholder={t('form.emailPlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -182,7 +182,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.phone')} *</FormLabel>
                 <FormControl>
-                  <Input type="tel" placeholder={t('form.phonePlaceholder')} {...field} />
+                  <Input type="text" placeholder={t('form.phonePlaceholder')} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -210,7 +210,7 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.age')} *</FormLabel>
                 <FormControl>
-                  <Input type="number" placeholder="18" {...field} />
+                  <Input type="text" placeholder="18" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -433,11 +433,11 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.highlightsLink')} *</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="url" 
-                    placeholder="https://youtube.com/..." 
-                    {...field} 
-                  />
+                    <Input 
+                      type="text" 
+                      placeholder="https://youtube.com/..." 
+                      {...field} 
+                    />
                 </FormControl>
                 <FormDescription>
                   {t('form.highlightsLinkDescription')}
@@ -456,10 +456,10 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.callAvailability')} *</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="date" 
-                    {...field} 
-                  />
+                    <Input 
+                      type="text" 
+                      {...field} 
+                    />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -473,10 +473,10 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.callTime')}</FormLabel>
                 <FormControl>
-                  <Input 
-                    type="time" 
-                    {...field} 
-                  />
+                    <Input 
+                      type="text" 
+                      {...field} 
+                    />
                 </FormControl>
                 <FormDescription>
                   {t('form.callTimeDescription')}

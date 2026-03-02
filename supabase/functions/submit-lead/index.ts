@@ -31,6 +31,54 @@ const leadSchema = z.object({
   repId: z.string().max(500).default(""),
 });
 
+type PipedriveRequestParams = {
+  domain: string;
+  path: string;
+  tokens: string[];
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  body?: unknown;
+};
+
+async function pipedriveRequestWithTokenFallback({
+  domain,
+  path,
+  tokens,
+  method = "POST",
+  body,
+}: PipedriveRequestParams): Promise<Response> {
+  let lastErrorText = "Unknown Pipedrive error";
+
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    const url = `https://${domain}.pipedrive.com/api/v1/${path}?api_token=${encodeURIComponent(token)}`;
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    });
+
+    if (response.ok) {
+      return response;
+    }
+
+    const errorText = await response.text();
+    lastErrorText = errorText || lastErrorText;
+
+    const shouldRetryWithFallback = response.status === 401 && i < tokens.length - 1;
+    if (shouldRetryWithFallback) {
+      console.warn(`Pipedrive auth failed for token #${i + 1}. Retrying with fallback token.`);
+      continue;
+    }
+
+    throw new Error(`Pipedrive request failed (${path}): ${errorText}`);
+  }
+
+  throw new Error(`Pipedrive request failed (${path}): ${lastErrorText}`);
+}
+
 // Helper function to convert time between timezones
 function convertTime(dateStr: string, timeStr: string, fromTz: string, toTz: string): string {
   try {
@@ -159,34 +207,26 @@ serve(async (req: Request) => {
       throw new Error("Sales representative settings not found.");
     }
 
-    if (!settings.pipedrive_api_token || !settings.pipedrive_domain) {
+    const repToken = settings.pipedrive_api_token?.trim() || "";
+    const fallbackToken = (Deno.env.get("PIPEDRIVE_API_TOKEN") ?? "").trim();
+    const PIPEDRIVE_TOKENS = Array.from(new Set([repToken, fallbackToken].filter(Boolean)));
+    const PIPEDRIVE_DOMAIN = settings.pipedrive_domain?.trim();
+
+    if (!PIPEDRIVE_DOMAIN || PIPEDRIVE_TOKENS.length === 0) {
       throw new Error("Sales representative Pipedrive credentials not configured.");
     }
 
-    const PIPEDRIVE_API_TOKEN = settings.pipedrive_api_token;
-    const PIPEDRIVE_DOMAIN = settings.pipedrive_domain;
-
     // Step 1: Create Person in Pipedrive
-    const personResponse = await fetch(
-      `https://${PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1/persons?api_token=${PIPEDRIVE_API_TOKEN}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: leadData.fullName,
-          email: [{ value: leadData.email, primary: true }],
-          phone: [{ value: leadData.phoneNumber, primary: true }],
-        }),
-      }
-    );
-
-    if (!personResponse.ok) {
-      const errorText = await personResponse.text();
-      console.error("Failed to create person in Pipedrive:", errorText);
-      throw new Error(`Pipedrive person creation failed: ${errorText}`);
-    }
+    const personResponse = await pipedriveRequestWithTokenFallback({
+      domain: PIPEDRIVE_DOMAIN,
+      path: "persons",
+      tokens: PIPEDRIVE_TOKENS,
+      body: {
+        name: leadData.fullName,
+        email: [{ value: leadData.email, primary: true }],
+        phone: [{ value: leadData.phoneNumber, primary: true }],
+      },
+    });
 
     const personData = await personResponse.json();
     const personId = personData.data.id;
@@ -223,53 +263,38 @@ ${leadData.playerImage ? `- Player Image: ${leadData.playerImage}` : ""}
 - Available for Call: ${leadData.callAvailability}
     `.trim();
 
-    const dealResponse = await fetch(
-      `https://${PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1/deals?api_token=${PIPEDRIVE_API_TOKEN}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: dealTitle,
-          person_id: personId,
-          value: 4495,
-          currency: "USD",
-          visible_to: "3", // Visible to entire company
-        }),
-      }
-    );
-
-    if (!dealResponse.ok) {
-      const errorText = await dealResponse.text();
-      console.error("Failed to create deal in Pipedrive:", errorText);
-      throw new Error(`Pipedrive deal creation failed: ${errorText}`);
-    }
+    const dealResponse = await pipedriveRequestWithTokenFallback({
+      domain: PIPEDRIVE_DOMAIN,
+      path: "deals",
+      tokens: PIPEDRIVE_TOKENS,
+      body: {
+        title: dealTitle,
+        person_id: personId,
+        value: 4495,
+        currency: "USD",
+        visible_to: "3", // Visible to entire company
+      },
+    });
 
     const dealData = await dealResponse.json();
     const dealId = dealData.data.id;
     console.log("Created deal in Pipedrive");
 
     // Step 3: Add notes to the deal
-    const noteResponse = await fetch(
-      `https://${PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1/notes?api_token=${PIPEDRIVE_API_TOKEN}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    try {
+      await pipedriveRequestWithTokenFallback({
+        domain: PIPEDRIVE_DOMAIN,
+        path: "notes",
+        tokens: PIPEDRIVE_TOKENS,
+        body: {
           content: dealNotes,
           deal_id: dealId,
           pinned_to_deal_flag: 1, // Pin the note
-        }),
-      }
-    );
-
-    if (!noteResponse.ok) {
-      console.error("Failed to add note, but deal was created successfully");
-    } else {
+        },
+      });
       console.log("Added detailed notes to deal");
+    } catch (error) {
+      console.error("Failed to add note, but deal was created successfully", error);
     }
 
     // Step 4: Create an activity for the scheduled call
@@ -301,14 +326,12 @@ ${leadData.playerImage ? `- Player Image: ${leadData.playerImage}` : ""}
       timezoneNote = leadData.timezone ? ` (${leadData.timezone} timezone)` : " (user's local time)";
     }
     
-    const activityResponse = await fetch(
-      `https://${PIPEDRIVE_DOMAIN}.pipedrive.com/api/v1/activities?api_token=${PIPEDRIVE_API_TOKEN}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    try {
+      await pipedriveRequestWithTokenFallback({
+        domain: PIPEDRIVE_DOMAIN,
+        path: "activities",
+        tokens: PIPEDRIVE_TOKENS,
+        body: {
           subject: `Call with ${leadData.fullName}`,
           type: "call",
           due_date: leadData.callAvailability,
@@ -317,14 +340,11 @@ ${leadData.playerImage ? `- Player Image: ${leadData.playerImage}` : ""}
           deal_id: dealId,
           person_id: personId,
           note: `Scheduled call with ${leadData.fullName} - ${leadData.phoneNumber}${leadData.callTime ? timezoneNote : ""}`,
-        }),
-      }
-    );
-
-    if (!activityResponse.ok) {
-      console.error("Failed to create activity, but deal was created successfully");
-    } else {
+        },
+      });
       console.log("Created activity in Pipedrive");
+    } catch (error) {
+      console.error("Failed to create activity, but deal was created successfully", error);
     }
 
     return new Response(

@@ -1,5 +1,5 @@
 import { PlayerLeadForm } from "@/components/PlayerLeadForm";
-import { Mail } from "lucide-react";
+import { Mail, Sparkles, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -56,6 +56,40 @@ export const FormSection = ({ repId }: FormSectionProps) => {
 
           <div className="bg-gradient-to-br from-card to-card/50 rounded-3xl border-2 border-border p-8 md:p-12 shadow-2xl">
             <PlayerLeadForm repId={repId} />
+          </div>
+
+          {/* Ryval Waitlist CTA */}
+          <div className="mt-12">
+            <a
+              href="https://ryval.pro"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group block relative overflow-hidden rounded-3xl border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-accent-blue/10 to-primary/5 p-8 md:p-10 shadow-xl hover:shadow-2xl hover:border-primary/50 transition-all duration-300"
+            >
+              <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-all" />
+              <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
+                <div className="flex items-start gap-4 text-center md:text-left">
+                  <div className="hidden md:flex shrink-0 w-14 h-14 items-center justify-center rounded-2xl bg-primary/20 border border-primary/30">
+                    <Sparkles className="w-7 h-7 text-primary" />
+                  </div>
+                  <div>
+                    <div className="inline-block mb-2 px-3 py-1 bg-primary/20 rounded-full border border-primary/30">
+                      <span className="text-xs font-bold text-primary uppercase tracking-wide">New • Limited Spots</span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-2">
+                      Join the Ryval Waitlist
+                    </h3>
+                    <p className="text-muted-foreground max-w-xl">
+                      Get early access to Ryval — the next-gen platform built for athletes ready to take their game further.
+                    </p>
+                  </div>
+                </div>
+                <div className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-bold shadow-lg group-hover:gap-3 transition-all whitespace-nowrap">
+                  Join Waitlist
+                  <ArrowRight className="w-5 h-5" />
+                </div>
+              </div>
+            </a>
           </div>
 
           {/* Contact Info */}

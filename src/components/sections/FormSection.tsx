@@ -1,5 +1,6 @@
 import { PlayerLeadForm } from "@/components/PlayerLeadForm";
-import { Mail, Sparkles, ArrowRight } from "lucide-react";
+import { Mail, ArrowRight } from "lucide-react";
+import ryvalLogo from "@/assets/ryval-logo.jpg";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -69,8 +70,8 @@ export const FormSection = ({ repId }: FormSectionProps) => {
               <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl group-hover:bg-primary/30 transition-all" />
               <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="flex items-start gap-4 text-center md:text-left">
-                  <div className="hidden md:flex shrink-0 w-14 h-14 items-center justify-center rounded-2xl bg-primary/20 border border-primary/30">
-                    <Sparkles className="w-7 h-7 text-primary" />
+                  <div className="hidden md:flex shrink-0 w-14 h-14 items-center justify-center rounded-2xl bg-black border border-primary/30 overflow-hidden">
+                    <img src={ryvalLogo} alt="Ryval logo" className="w-full h-full object-contain" />
                   </div>
                   <div>
                     <div className="inline-block mb-2 px-3 py-1 bg-primary/20 rounded-full border border-primary/30">

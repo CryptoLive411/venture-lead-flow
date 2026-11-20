@@ -58,7 +58,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      rep_id_for_username: {
+        Args: { slug: string }
+        Returns: string | null
+      }
     }
     Enums: {
       [_ in never]: never

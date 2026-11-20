@@ -78,17 +78,18 @@ export default function Settings() {
 
       // Check if username is already taken by another user
       if (username) {
-        const { data: existingUser, error: checkError } = await supabase
-          .from("user_settings")
-          .select("user_id")
-          .eq("username", username)
-          .maybeSingle();
+        // Other reps' rows are not readable from the browser; this returns
+        // only the id of whoever holds the username.
+        const { data: takenBy, error: checkError } = await supabase.rpc(
+          "rep_id_for_username",
+          { slug: username },
+        );
 
         if (checkError) {
           console.error("Error checking username:", checkError);
         }
 
-        if (existingUser && existingUser.user_id !== user.id) {
+        if (takenBy && takenBy !== user.id) {
           throw new Error(`Username "${username}" is already taken. Please choose another one.`);
         }
       }

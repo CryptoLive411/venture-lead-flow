@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Loader2, Lock, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -24,6 +25,19 @@ import {
 } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { fill } from "@/translations/account";
+import { RyvalAccountStep } from "@/components/RyvalAccountStep";
+import { LeadSuccess } from "@/components/LeadSuccess";
+import {
+  MAX_VIDEO_BYTES,
+  POSITIONS,
+  type RyvalSession,
+  positionEnglish,
+  profilePatch,
+  updateProfile,
+  uploadPhoto,
+  uploadVideo,
+} from "@/lib/ryval";
 
 const formSchema = z.object({
   fullName: z.string().trim().max(500).default(""),
@@ -53,8 +67,15 @@ interface PlayerLeadFormProps {
   repId?: string;
 }
 
+type Done = { firstName: string; email: string; warnings: string[] };
+
 export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [session, setSession] = useState<RyvalSession | null>(null);
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [stage, setStage] = useState<string | null>(null);
+  const [done, setDone] = useState<Done | null>(null);
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -82,17 +103,40 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
     },
   });
 
+  const positionLabels = t("account.positions").split("|||");
+
+  const onAccount = (s: RyvalSession | null, fullName?: string) => {
+    setSession(s);
+    form.setValue("email", s?.email ?? "");
+    form.setValue("fullName", s ? fullName || s.fullName || "" : "");
+  };
+
+  const pickVideo = (file: File | undefined) => {
+    setVideoError(null);
+    if (!file) return setVideoFile(null);
+    if (file.size > MAX_VIDEO_BYTES) {
+      setVideoFile(null);
+      setVideoError(t("account.videoTooLarge"));
+      return;
+    }
+    setVideoFile(file);
+  };
+
   const onSubmit = async (values: FormValues) => {
     setIsSubmitting(true);
     console.log("Submitting lead form");
+    const warnings: string[] = [];
+    const hasTape = values.hasHighlightTape === "yes";
+    const video = hasTape ? videoFile : null;
 
     try {
       if (!repId) {
         throw new Error("Invalid link. Please use the link provided by your sales representative.");
       }
+      if (!session) throw new Error(t("account.errSession"));
 
+      setStage(t("account.savingProfile"));
       let imageUrl = "";
-      
       if (values.playerImage) {
         const fileName = `${Date.now()}-${values.playerImage.name}`;
         const { error: uploadError } = await supabase.storage
@@ -106,15 +150,46 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
         const { data: { publicUrl } } = supabase.storage
           .from('player-images')
           .getPublicUrl(fileName);
-        
+
         imageUrl = publicUrl;
       }
 
-      const { data, error } = await supabase.functions.invoke("submit-lead", {
+      // The player's Ryval profile, the same fields the Ryval onboarding writes.
+      const indexes = (chosen: string[], key: string) => {
+        const options = t(key).split("|||");
+        return chosen.map((c) => options.indexOf(c)).filter((i) => i >= 0);
+      };
+      try {
+        await updateProfile(
+          session,
+          profilePatch({
+            phoneNumber: values.phoneNumber,
+            currentClub: values.currentClub,
+            position: values.position,
+            nationality: values.nationality,
+            highschoolGPA: values.highschoolGPA,
+            highschoolGradYear: values.highschoolGradYear,
+            preferredDivisionIndexes: indexes(values.preferredDivision, "form.divisionOptions"),
+            preferredLeagueIndexes: indexes(values.preferredLeague, "form.leagueOptions"),
+            highlightsLink: hasTape ? values.highlightsLink : undefined,
+          }),
+        );
+      } catch (err) {
+        console.error("Ryval profile save failed:", err);
+        warnings.push(t("account.warnProfile"));
+      }
+
+      const { error } = await supabase.functions.invoke("submit-lead", {
         body: {
           ...values,
+          fullName: values.fullName || session.fullName || "",
+          email: session.email,
+          position: values.position ? positionEnglish(values.position) : "",
+          highlightsLink: hasTape ? values.highlightsLink : "",
           repId,
           playerImage: imageUrl,
+          ryvalUserId: session.userId,
+          highlightUploaded: !!video,
         },
       });
 
@@ -125,12 +200,31 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
 
       console.log("Lead submitted successfully");
 
-      toast({
-        title: t('form.successTitle'),
-        description: t('form.successMessage'),
-      });
+      // Photo and film go on the Ryval profile after the lead is safe in Pipedrive.
+      if (values.playerImage) {
+        try {
+          const photoId = await uploadPhoto(session, values.playerImage);
+          await updateProfile(session, { profile_photo_id: photoId });
+        } catch (err) {
+          console.error("Ryval photo upload failed:", err);
+          if (!warnings.includes(t("account.warnProfile"))) warnings.push(t("account.warnProfile"));
+        }
+      }
+      if (video) {
+        try {
+          setStage(fill(t("account.uploadingVideo"), { p: 0 }));
+          const reelId = await uploadVideo(session, video, (f) =>
+            setStage(fill(t("account.uploadingVideo"), { p: Math.round(f * 100) })),
+          );
+          await updateProfile(session, { highlight_reel_id: reelId });
+        } catch (err) {
+          console.error("Ryval video upload failed:", err);
+          warnings.push(t("account.warnVideo"));
+        }
+      }
 
-      form.reset();
+      const fullName = values.fullName || session.fullName || "";
+      setDone({ firstName: fullName.trim().split(/\s+/)[0] || "", email: session.email, warnings });
     } catch (error) {
       console.error("Failed to submit lead:", error);
       toast({
@@ -140,41 +234,25 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
       });
     } finally {
       setIsSubmitting(false);
+      setStage(null);
     }
   };
 
+  if (done) return <LeadSuccess firstName={done.firstName} email={done.email} warnings={done.warnings} />;
+
   return (
+    <div className="space-y-8">
+      <RyvalAccountStep session={session} onSession={onAccount} />
+
+      {!session ? (
+        <p className="flex items-center justify-center gap-2 rounded-2xl border border-dashed border-border px-4 py-8 text-center text-muted-foreground">
+          <Lock className="h-4 w-4 shrink-0" />
+          {t("account.locked")}
+        </p>
+      ) : (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6" noValidate>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('form.fullName')} *</FormLabel>
-                <FormControl>
-                  <Input placeholder={t('form.fullNamePlaceholder')} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('form.email')} *</FormLabel>
-                <FormControl>
-                  <Input type="text" placeholder={t('form.emailPlaceholder')} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="phoneNumber"
@@ -223,9 +301,20 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>{t('form.position')} *</FormLabel>
-                <FormControl>
-                  <Input placeholder={t('form.positionPlaceholder')} {...field} />
-                </FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder={t('account.positionPlaceholder')} />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {POSITIONS.map(([value, english], i) => (
+                      <SelectItem key={value} value={value}>
+                        {positionLabels[i] || english}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -426,26 +515,57 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
         />
 
         {form.watch("hasHighlightTape") === "yes" && (
-          <FormField
-            control={form.control}
-            name="highlightsLink"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>{t('form.highlightsLink')} *</FormLabel>
-                <FormControl>
-                    <Input 
-                      type="text" 
-                      placeholder="https://youtube.com/..." 
-                      {...field} 
-                    />
-                </FormControl>
-                <FormDescription>
-                  {t('form.highlightsLinkDescription')}
-                </FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="space-y-4 rounded-2xl border border-border p-4">
+            <FormField
+              control={form.control}
+              name="highlightsLink"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t('form.highlightsLink')}</FormLabel>
+                  <FormControl>
+                      <Input
+                        type="text"
+                        placeholder="https://youtube.com/..."
+                        {...field}
+                      />
+                  </FormControl>
+                  <FormDescription>
+                    {t('account.highlightLinkHint')}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-foreground">{t('account.highlightUpload')}</p>
+              {videoFile ? (
+                <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-secondary/30 px-3 py-2 text-sm">
+                  <span className="truncate">{videoFile.name} · {(videoFile.size / (1024 * 1024)).toFixed(0)} MB</span>
+                  <button
+                    type="button"
+                    onClick={() => setVideoFile(null)}
+                    className="inline-flex shrink-0 items-center gap-1 text-muted-foreground hover:text-foreground"
+                  >
+                    <X className="h-4 w-4" />
+                    {t('account.removeFile')}
+                  </button>
+                </div>
+              ) : (
+                <label className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border px-4 py-5 text-sm text-muted-foreground transition hover:border-primary/50 hover:text-foreground">
+                  <Upload className="h-4 w-4" />
+                  <span>{t('account.highlightUploadHint')}</span>
+                  <input
+                    type="file"
+                    accept="video/*"
+                    className="sr-only"
+                    onChange={(e) => pickVideo(e.target.files?.[0])}
+                  />
+                </label>
+              )}
+              {videoError ? <p className="text-sm text-destructive">{videoError}</p> : null}
+            </div>
+          </div>
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -456,16 +576,16 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.callAvailability')} *</FormLabel>
                 <FormControl>
-                    <Input 
-                      type="text" 
-                      {...field} 
+                    <Input
+                      type="text"
+                      {...field}
                     />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          
+
           <FormField
             control={form.control}
             name="callTime"
@@ -473,9 +593,9 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
               <FormItem>
                 <FormLabel>{t('form.callTime')}</FormLabel>
                 <FormControl>
-                    <Input 
-                      type="text" 
-                      {...field} 
+                    <Input
+                      type="text"
+                      {...field}
                     />
                 </FormControl>
                 <FormDescription>
@@ -492,9 +612,13 @@ export const PlayerLeadForm = ({ repId }: PlayerLeadFormProps) => {
           disabled={isSubmitting}
           className="w-full h-12 text-base font-bold"
         >
+          {isSubmitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {isSubmitting ? t('form.submitting') : t('form.submit')}
         </Button>
+        {stage ? <p className="text-center text-sm text-muted-foreground" aria-live="polite">{stage}</p> : null}
       </form>
     </Form>
+      )}
+    </div>
   );
 };

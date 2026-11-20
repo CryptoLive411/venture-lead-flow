@@ -8,20 +8,22 @@ import { it } from './it';
 import { zh } from './zh';
 import { ru } from './ru';
 import { nl } from './nl';
+import { account } from './account';
 
 export type Language = 'en' | 'es' | 'pt' | 'fr' | 'ar' | 'de' | 'it' | 'zh' | 'ru' | 'nl';
 
+// `account`: the player account step, highlight upload and success screen (account.ts).
 export const translations = {
-  en,
-  es,
-  pt,
-  fr,
-  ar,
-  de,
-  it,
-  zh,
-  ru,
-  nl,
+  en: { ...en, account: account.en },
+  es: { ...es, account: account.es },
+  pt: { ...pt, account: account.pt },
+  fr: { ...fr, account: account.fr },
+  ar: { ...ar, account: account.ar },
+  de: { ...de, account: account.de },
+  it: { ...it, account: account.it },
+  zh: { ...zh, account: account.zh },
+  ru: { ...ru, account: account.ru },
+  nl: { ...nl, account: account.nl },
 };
 
 export const languages = [

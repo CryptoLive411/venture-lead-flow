@@ -29,6 +29,9 @@ const leadSchema = z.object({
   timezone: z.string().trim().max(500).optional(),
   playerImage: z.string().trim().max(1000).optional(),
   repId: z.string().max(500).default(""),
+  // The player's Ryval account, created at the top of the form.
+  ryvalUserId: z.string().uuid().optional().catch(undefined),
+  highlightUploaded: z.boolean().optional().catch(undefined),
 });
 
 type PipedriveRequestParams = {
@@ -175,6 +178,8 @@ interface LeadData {
   timezone?: string;
   playerImage?: string;
   repId: string;
+  ryvalUserId?: string;
+  highlightUploaded?: boolean;
 }
 
 serve(async (req: Request) => {
@@ -259,8 +264,10 @@ serve(async (req: Request) => {
 - Needs Visa Assistance: ${leadData.visaAssistance}
 - Has Highlight Tape: ${leadData.hasHighlightTape}
 ${leadData.highlightsLink ? `- Highlights Link: ${leadData.highlightsLink}` : ""}
+${leadData.highlightUploaded ? "- Highlight Video: uploaded to the player's Ryval profile" : ""}
 ${leadData.playerImage ? `- Player Image: ${leadData.playerImage}` : ""}
 - Available for Call: ${leadData.callAvailability}
+${leadData.ryvalUserId ? `\n**Ryval Profile:** https://api.ryvalsports.app/p/${leadData.ryvalUserId}` : ""}
     `.trim();
 
     const dealResponse = await pipedriveRequestWithTokenFallback({

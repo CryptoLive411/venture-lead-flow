@@ -33,11 +33,23 @@ const FormPage = () => {
         // If using slug format (just the username)
         if (slug) {
           console.log("🔍 FormPage: Looking up user by slug:", slug);
-          const { data, error } = await supabase
-            .from("user_settings")
-            .select("user_id, username, email, phone_number")
-            .eq("username", slug)
-            .maybeSingle();
+          // Only the rep's id comes back: user_settings is not readable from
+          // the browser (it holds each rep's Pipedrive token).
+          let { data: id, error } = await supabase.rpc("rep_id_for_username", {
+            slug,
+          });
+
+          // Until migration 20261120030000 is applied the function does not
+          // exist yet; the old table read still works then.
+          if (error) {
+            const old = await supabase
+              .from("user_settings")
+              .select("user_id")
+              .eq("username", slug)
+              .maybeSingle();
+            id = old.data?.user_id ?? null;
+            error = old.error ? error : null;
+          }
 
           if (error) {
             console.error("❌ FormPage: Error finding user:", error);
@@ -45,9 +57,9 @@ const FormPage = () => {
             return;
           }
 
-          if (data) {
-            console.log("✅ FormPage: Found user data:", data);
-            setRepId(data.user_id);
+          if (id) {
+            console.log("✅ FormPage: Found rep for slug");
+            setRepId(id);
           } else {
             console.log("⚠️ FormPage: No user found for slug:", slug);
           }
